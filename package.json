@@ -1,0 +1,41 @@
+{
+  "name": "smart-webpack-plugin",
+  "version": "0.0.1",
+  "description": "众安直营前端相关工具集合-脚手架",
+  "main": "src/main.js",
+  "author": "ccode",
+  "license": "MIT",
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "scripts": {
+    "start": "ts-node ./app/index.ts",
+    "dev": "ts-node-dev ./app/index.ts"
+  },
+  "dependencies": {
+    "chalk": "^3.0.0",
+    "cosmiconfig": "^6.0.0",
+    "mini-css-extract-plugin": "^0.8.0",
+    "optimize-css-assets-webpack-plugin": "^5.0.3",
+    "postcss-import": "^12.0.1",
+    "postcss-preset-env": "^6.7.0",
+    "postcss-url": "^8.0.0",
+    "terser-webpack-plugin": "^2.2.1",
+    "ts-node": "^8.4.1"
+  },
+  "devDependencies": {
+    "@types/chalk": "^2.2.0",
+    "@types/compression-webpack-plugin": "^2.0.1",
+    "@types/mini-css-extract-plugin": "^0.8.0",
+    "@types/node": "^12.12.5",
+    "@types/optimize-css-assets-webpack-plugin": "^5.0.1",
+    "@types/terser-webpack-plugin": "^2.2.0",
+    "@types/webpack": "^4.41.0",
+    "prettier": "1.19.1",
+    "ts-node-dev": "^1.0.0-pre.43",
+    "typescript": "^3.7.2",
+    "vue-loader": "^15.7.2",
+    "webpack": "^4.41.2",
+    "webpack-log": "^3.0.1"
+  }
+}
