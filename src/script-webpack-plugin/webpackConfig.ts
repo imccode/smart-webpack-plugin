@@ -1,24 +1,24 @@
-import path from 'path'
-import { Configuration } from 'webpack'
-import { root, isVue } from '../config'
-import { NODE_ENV } from 'src/env'
-import babelConfig from './babelConfig'
-import VueLoaderPlugin from 'vue-loader/lib/plugin'
-import TerserWebpackPlugin from 'terser-webpack-plugin'
 import CompressionWebpackPlugin from 'compression-webpack-plugin'
+import { NODE_ENV } from '../env'
+import TerserWebpackPlugin from 'terser-webpack-plugin'
+import { ScriptWebpackPluginOptions } from 'types'
+import VueLoaderPlugin from 'vue-loader/lib/plugin'
+import { Configuration } from 'webpack'
+import { isReact, isTypescript, isVue, root } from '../config'
+import babelConfig from './babelConfig'
 
-const cachePath = path.resolve(root, '.cache', 'babel')
+export default (options: ScriptWebpackPluginOptions) => {
+  let regExpStr = '.js'
 
-export default (
-  options: ScriptWebpackPluginOptions = {
-    cacheDirectory: NODE_ENV === 'development' ? cachePath : false
+  if (isReact) {
+    regExpStr = isTypescript ? '.tsx' : '.jsx'
   }
-) => {
+
   const config: Configuration = {
     module: {
       rules: [
         {
-          test: /\.([jt])sx?$/,
+          test: new RegExp(`${regExpStr}$`),
           exclude: /(node_modules|bower_components)/,
           use: [
             {

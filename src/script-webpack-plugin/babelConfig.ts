@@ -1,7 +1,8 @@
-import { cosmiconfigSync } from 'cosmiconfig'
-import log from '../log'
-import { isReact, isTypescript } from '../config'
 import chalk from 'chalk'
+import { cosmiconfigSync } from 'cosmiconfig'
+import { BabelConfiguration, SmartCosmiconfigResult } from 'types'
+import { isReact, isTypescript } from '../config'
+import log from '../log'
 
 const defaultConfig: BabelConfiguration = {
   /**

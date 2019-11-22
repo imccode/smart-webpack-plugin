@@ -2,6 +2,7 @@ import { cosmiconfigSync } from 'cosmiconfig'
 import postcssImport from 'postcss-import'
 import postcssPresetEnv from 'postcss-preset-env'
 import postcssUrl from 'postcss-url'
+import { PostcssConfiguration, SmartCosmiconfigResult } from 'types'
 import log from '../log'
 import chalk = require('chalk')
 

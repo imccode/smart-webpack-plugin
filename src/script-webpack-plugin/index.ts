@@ -1,11 +1,12 @@
 import path from 'path'
-import { root } from 'src/config'
-import { NODE_ENV } from 'src/env'
+import { root } from '../config'
+import { NODE_ENV } from '../env'
+import { ScriptWebpackPluginOptions } from 'types'
 import { Compiler, Configuration } from 'webpack'
 import webpackConfig from './webpackConfig'
 
 /**
- * 脚本插件配置
+ * 脚本webpack插件
  */
 class ScriptWebpackPlugin {
   options: ScriptWebpackPluginOptions = {
@@ -25,7 +26,6 @@ class ScriptWebpackPlugin {
    */
   inject(compiler: Compiler) {
     compiler.options.module.rules.push(...this.webpackConfig.module.rules)
-    compiler.options.plugins.push(...this.webpackConfig.plugins)
   }
 
   /**
@@ -33,6 +33,7 @@ class ScriptWebpackPlugin {
    * @param compiler
    */
   apply(compiler: Compiler) {
+    compiler.options.plugins.push(...this.webpackConfig.plugins)
     compiler.hooks.afterEnvironment.tap('ScriptWebpackPlugin', () => this.inject(compiler))
   }
 }

@@ -12,8 +12,7 @@
     "resolveJsonModule": true,
     "rootDir": "./",
     "baseUrl": ".",
-    "lib": ["es2018.promise"],
-    "typeRoots": ["./node_modules/@types", "./typings"]
+    "lib": ["es2018.promise"]
   },
   "exclude": ["node_modules"]
 }

@@ -1,21 +1,13 @@
-import path from 'path'
-import { Configuration } from 'webpack'
-import { root, isVue } from '../config'
-import { NODE_ENV } from 'src/env'
-import miniCssExtractPlugin from 'mini-css-extract-plugin'
-import { RuleSetUse, RuleSetUseItem } from 'webpack'
-import postcssConfig from './postcssConfig'
-import OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin'
-import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import CompressionWebpackPlugin from 'compression-webpack-plugin'
+import { default as miniCssExtractPlugin, default as MiniCssExtractPlugin } from 'mini-css-extract-plugin'
+import OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin'
+import { NODE_ENV } from '../env'
+import { StyleWebpackPluginOptions } from 'types'
+import { Configuration, RuleSetUse, RuleSetUseItem } from 'webpack'
+import { isVue } from '../config'
+import postcssConfig from './postcssConfig'
 
-const cachePath = path.resolve(root, '.cache', 'style')
-
-export default (
-  options: StyleWebpackPluginOptions = {
-    cacheDirectory: NODE_ENV === 'development' ? cachePath : false
-  }
-) => {
+export default (options: StyleWebpackPluginOptions) => {
   /**
    * 提取样式到单个css文件
    */

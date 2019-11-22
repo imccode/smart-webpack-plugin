@@ -1,18 +1,30 @@
 import path from 'path'
-import { root } from 'src/config'
-import { NODE_ENV } from 'src/env'
+import { root } from '../config'
+import { NODE_ENV } from '../env'
+import { StyleWebpackPluginOptions } from 'types'
 import { Compiler, Configuration } from 'webpack'
 import webpackConfig from './webpackConfig'
 
+/**
+ * 样式webpack插件
+ */
 class StyleWebpackPlugin {
   options: StyleWebpackPluginOptions = {
+    enable: true,
     cacheDirectory: NODE_ENV === 'development' ? path.resolve(root, '.cache', 'babel') : false
   }
 
   webpackConfig: Configuration = {}
 
   constructor(options: StyleWebpackPluginOptions = {}) {
-    this.options = { ...this.options, ...options }
+    this.options = {
+      ...this.options,
+      ...options,
+      cssLoader: {
+        ...this.options.cssLoader,
+        ...(options.cssLoader || {})
+      }
+    }
     this.webpackConfig = webpackConfig(this.options)
   }
 
@@ -30,7 +42,9 @@ class StyleWebpackPlugin {
    * @param compiler
    */
   apply(compiler: Compiler) {
-    compiler.hooks.afterEnvironment.tap('StyleWebpackPlugin', () => this.inject(compiler))
+    if (this.options.enable) {
+      compiler.hooks.afterEnvironment.tap('StyleWebpackPlugin', () => this.inject(compiler))
+    }
   }
 }
 
