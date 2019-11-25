@@ -1,1 +1,4 @@
-console.log(111)
+import './style.scss'
+
+document.write('abcdefg')
+document.write('abcdefg')

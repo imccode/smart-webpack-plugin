@@ -1,10 +1,12 @@
-import path from 'path'
-import SimpleProgressWebpackPlugin from 'simple-progress-webpack-plugin'
-import TerserWebpackPlugin from 'terser-webpack-plugin'
-import { LibWebpackPluginOptions } from 'types'
-import webpack, { Configuration, HotModuleReplacementPlugin } from 'webpack'
+import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin'
+import { ServerWebpackPluginOptions } from 'types'
+import { Configuration, Compiler } from 'webpack'
+import { localIps } from '../utils'
 
-export default (options: LibWebpackPluginOptions) => {
+export default (options: ServerWebpackPluginOptions) => {
+  const newOptions: ServerWebpackPluginOptions = { ...options }
+  delete newOptions.enable
+
   const config: Configuration = {
     /**
      * 最小化显示构建信息
@@ -15,23 +17,6 @@ export default (options: LibWebpackPluginOptions) => {
      */
     mode: 'development',
     /**
-     * 导出配置
-     */
-    output: {
-      /**
-       * 导出文件名设置
-       *
-       * 根据文件chunk名生成名字
-       */
-      filename: 'js/[name].[hash:8].min.js',
-      /**
-       * 导出分块(chunk)文件名设置
-       *
-       * 根据文件chunk名生成名字
-       */
-      chunkFilename: 'js/[name].chunk-[hash:8].min.js'
-    },
-    /**
      * 浏览器debug sourceMap 模式
      */
     devtool: 'cheap-module-eval-source-map',
@@ -39,7 +24,18 @@ export default (options: LibWebpackPluginOptions) => {
      * 监听文件改动
      */
     watch: true,
-    plugins: [new HotModuleReplacementPlugin()]
+    plugins: [
+      /**
+       * 只显示核心错误
+       */
+      new FriendlyErrorsWebpackPlugin({
+        compilationSuccessInfo: {
+          messages: localIps().map(ip => {
+            return `listening: http://${ip}:${options.port}`
+          })
+        }
+      })
+    ]
   }
 
   return config

@@ -2,7 +2,7 @@ import chalk from 'chalk'
 import { cosmiconfigSync } from 'cosmiconfig'
 import { BabelConfiguration, SmartCosmiconfigResult } from 'types'
 import { isReact, isTypescript } from '../config'
-import log from '../log'
+import queueLog from '../queueLog'
 
 const defaultConfig: BabelConfiguration = {
   /**
@@ -69,7 +69,7 @@ const userBabelConfig: SmartCosmiconfigResult<BabelConfiguration> = cosmiconfigS
 let config = defaultConfig
 
 if (userBabelConfig) {
-  log.info(`已找到用户额外的${chalk.green('Babel')}配置，并合并默认配置`)
+  queueLog.info(`已找到用户额外的${chalk.green('Babel')}配置，并合并默认配置`)
   config = userBabelConfig.config
 
   const { presets, plugins }: BabelConfiguration = userBabelConfig.config
@@ -77,7 +77,11 @@ if (userBabelConfig) {
     config.presets = [...defaultConfig.presets, ...presets]
   }
   if (plugins && Array.isArray(plugins)) {
-    config.plugins = [...defaultConfig.plugins, ...plugins]
+    config.plugins = [
+      ...defaultConfig.plugins.slice(0, defaultConfig.plugins.length - 1 || 0),
+      ...plugins,
+      ...defaultConfig.plugins.slice(defaultConfig.plugins.length - 1)
+    ]
   }
 }
 
@@ -85,7 +89,7 @@ if (userBabelConfig) {
  * 转换ts、tsx语法
  */
 if (isTypescript) {
-  log.info(`已使用${chalk.green('Typescript')}语言专属配置`)
+  queueLog.info(`已使用${chalk.green('Typescript')}语言专属配置`)
   config.presets.push('@babel/preset-typescript')
 }
 
@@ -93,7 +97,7 @@ if (isTypescript) {
  * 转换react jsx语法
  */
 if (isReact) {
-  log.info(`以使用${chalk.green('React')}框架专属配置`)
+  queueLog.info(`以使用${chalk.green('React')}框架专属配置`)
   config.presets.unshift(['@babel/preset-react', { useBuiltIns: 'usage' }])
 }
 

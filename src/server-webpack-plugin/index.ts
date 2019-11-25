@@ -1,28 +1,35 @@
-import path from 'path'
-import { LibWebpackPluginOptions } from 'types'
-import Koa from 'koa'
-import koaWebpack from 'koa-webpack'
-import { Compiler, Configuration } from 'webpack'
-import { root } from '../config'
+import { ServerWebpackPluginOptions } from 'types'
+import { Compiler, Entry, EntryFunc, Configuration } from 'webpack'
+import serverOptions from './options'
 import webpackConfig from './webpackConfig'
+import serve from './serve'
 
 /**
  * server webpack插件
  */
 class ServerWebpackPlugin {
-  options: LibWebpackPluginOptions = {
-    outDirectory: path.resolve(root, 'lib')
+  options: ServerWebpackPluginOptions = {
+    enable: process.env.NODE_ENV === 'development',
+    ...serverOptions
   }
 
-  webpackConfig: Configuration = {}
+  webpackConfig: Configuration = webpackConfig(this.options)
 
-  constructor(options: LibWebpackPluginOptions = {}) {
-    this.options = {
-      ...this.options,
-      ...options
+  constructor(options: ServerWebpackPluginOptions = {}) {
+    this.options = { ...this.options, ...options }
+  }
+
+  /**
+   * 构造一个新的entry
+   */
+  structureEntry(entry: string | string[] | Entry | EntryFunc) {
+    const entryFileName = 'webpack-plugin-serve/client'
+
+    if (typeof entry === 'string') {
+      return [entry, entryFileName]
+    } else if (Array.isArray(entry)) {
+      return [...entry, entryFileName]
     }
-
-    this.webpackConfig = webpackConfig(this.options)
   }
 
   /**
@@ -30,18 +37,30 @@ class ServerWebpackPlugin {
    * @param compiler
    */
   inject(compiler: Compiler) {
-    const { plugins, mode, output } = this.webpackConfig
-    compiler.options.mode = mode
-    compiler.options.plugins.push(...plugins)
-    compiler.outputPath = output.path
-    compiler.options.output = {
-      ...compiler.options.output,
-      ...output
-    }
-  }
+    const { plugins, mode, stats, devtool, watch } = this.webpackConfig
+    const { entry } = compiler.options
 
-  initServer(compiler: Compiler) {
-    const app = new Koa()
+    compiler.options.mode = mode
+    compiler.options.stats = stats
+    compiler.options.devtool = devtool
+    compiler.options.watch = watch
+    compiler.options.plugins.push(...plugins)
+
+    if (typeof entry === 'object') {
+      Object.keys(entry).forEach(key => {
+        compiler.options.entry[key] = this.structureEntry(compiler.options.entry[key])
+      })
+    } else if (typeof entry === 'function') {
+      const entryConfig = entry()
+      compiler.options.entry = {}
+      if (typeof entryConfig === 'object') {
+        Object.keys(entry).forEach(key => {
+          compiler.options.entry[key] = this.structureEntry(compiler.options.entry[key])
+        })
+      }
+    } else {
+      compiler.options.entry = this.structureEntry(compiler.options.entry)
+    }
   }
 
   /**
@@ -49,7 +68,12 @@ class ServerWebpackPlugin {
    * @param compiler
    */
   apply(compiler: Compiler) {
-    compiler.hooks.compilation.tap('ServerWebpackPlugin', () => this.initServer(compiler))
+    if (this.options.enable) {
+      this.inject(compiler)
+      compiler.hooks.afterEnvironment.tap('ServerWebpackPlugin', () =>
+        serve(this.options, compiler)
+      )
+    }
   }
 }
 

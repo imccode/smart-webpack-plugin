@@ -3,7 +3,7 @@ import postcssImport from 'postcss-import'
 import postcssPresetEnv from 'postcss-preset-env'
 import postcssUrl from 'postcss-url'
 import { PostcssConfiguration, SmartCosmiconfigResult } from 'types'
-import log from '../log'
+import queueLog from '../queueLog'
 import chalk = require('chalk')
 
 const defaultConfig: PostcssConfiguration = {
@@ -39,7 +39,7 @@ const userPostcssConfig: SmartCosmiconfigResult<PostcssConfiguration> = cosmicon
 let config = defaultConfig
 
 if (userPostcssConfig) {
-  log.info(`已找到用户额外的${chalk.green('Postcss')}配置，并合并默认配置`)
+  queueLog.info(`已找到用户额外的${chalk.green('Postcss')}配置，并合并默认配置`)
   config = userPostcssConfig.config
 
   const { plugins }: PostcssConfiguration = userPostcssConfig.config

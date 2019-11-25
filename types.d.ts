@@ -88,6 +88,14 @@ declare namespace SmartWebpackPlugin {
      * lint-webpack-plugin 代码校验 插件的可配参数
      */
     lint?: LintWebpackPluginOptions
+    /**
+     * progress-webpack-plugin 构建进度 插件的可配参数
+     */
+    progress?: ProgressWebpackPluginOptions
+    /**
+     * server-webpack-plugin 本地开发环境 插件的可配参数
+     */
+    server?: ServerWebpackPluginOptions
   }
 
   /**
@@ -186,5 +194,38 @@ declare namespace SmartWebpackPlugin {
            */
           [key: string]: any
         }
+  }
+  /**
+   * progress-webpack-plugin 构建进度 插件的可配参数
+   */
+  interface ProgressWebpackPluginOptions {
+    /**
+     * 是否启用
+     */
+    enable?: boolean
+  }
+
+  /**
+   * server-webpack-plugin 本地开发环境 插件的可配参数
+   *
+   * options docs: https://github.com/shellscape/webpack-plugin-serve
+   */
+  interface ServerWebpackPluginOptions {
+    /**
+     * 是否启用
+     */
+    enable?: boolean
+    /**
+     * 启用热更新
+     */
+    hmr?: boolean
+    /**
+     * 开发端口
+     */
+    port?: number
+    /**
+     * 是否开启压缩，主要返回gzip文件
+     */
+    compress?: boolean
   }
 }

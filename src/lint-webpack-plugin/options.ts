@@ -1,4 +1,6 @@
-export default {
+import { LintWebpackPluginOptions } from 'types'
+
+const options: LintWebpackPluginOptions = {
   fix: true,
   eslint: {
     fix: true,
@@ -9,3 +11,5 @@ export default {
     enable: true
   }
 }
+
+export default options

@@ -1,5 +1,8 @@
 import webpack from 'webpack'
+process.env.NODE_ENV = 'development'
+
 import SmartWebpackPlugin from '../src'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
 
 const compiler = webpack({
   entry: './test/test',
@@ -8,10 +11,20 @@ const compiler = webpack({
       lint: {
         enable: false
       }
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'index.html',
+      hash: true,
+      inject: true,
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true
+      }
     })
   ]
 })
-compiler.run((error, stats) => {
+
+compiler.watch({}, (error, stats) => {
   /**
    * 构建失败，抛出错误
    */
