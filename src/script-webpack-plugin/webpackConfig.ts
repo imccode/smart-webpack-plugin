@@ -8,10 +8,10 @@ import { isReact, isTypescript, isVue, root } from '../config'
 import babelConfig from './babelConfig'
 
 export default (options: ScriptWebpackPluginOptions) => {
-  let regExpStr = '.js'
+  let regExpStr = isTypescript ? '.(t|j)s' : '.js'
 
   if (isReact) {
-    regExpStr = isTypescript ? '.tsx' : '.jsx'
+    regExpStr = isTypescript ? '.tsx?' : '.jsx?'
   }
 
   const config: Configuration = {

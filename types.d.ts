@@ -3,6 +3,8 @@ export = SmartWebpackPlugin
 declare namespace SmartWebpackPlugin {
   type ArrayOptions = Array<string | Array<string | { [key: string]: any }>>
 
+  type WSMessageType = 'beforeUpdate' | 'update' | 'close'
+
   /**
    * CosmiconfigResult
    */
@@ -180,9 +182,9 @@ declare namespace SmartWebpackPlugin {
           [key: string]: any
         }
     /**
-     * stylint配置规则
+     * stylelint配置规则
      */
-    stylint?:
+    stylelint?:
       | false
       | {
           /**
@@ -218,7 +220,7 @@ declare namespace SmartWebpackPlugin {
     /**
      * 启用热更新
      */
-    hmr?: boolean
+    hot?: boolean
     /**
      * 开发端口
      */

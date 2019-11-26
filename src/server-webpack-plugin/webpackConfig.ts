@@ -1,6 +1,6 @@
 import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin'
 import { ServerWebpackPluginOptions } from 'types'
-import { Configuration, Compiler } from 'webpack'
+import { Configuration, Compiler, HotModuleReplacementPlugin } from 'webpack'
 import { localIps } from '../utils'
 
 export default (options: ServerWebpackPluginOptions) => {
@@ -20,6 +20,10 @@ export default (options: ServerWebpackPluginOptions) => {
      * 浏览器debug sourceMap 模式
      */
     devtool: 'cheap-module-eval-source-map',
+    output: {
+      filename: '[name].[hash:8].js',
+      chunkFilename: '[name].chunk-[hash:8].js'
+    },
     /**
      * 监听文件改动
      */
@@ -36,6 +40,10 @@ export default (options: ServerWebpackPluginOptions) => {
         }
       })
     ]
+  }
+
+  if (options.hot) {
+    config.plugins.push(new HotModuleReplacementPlugin())
   }
 
   return config

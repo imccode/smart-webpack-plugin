@@ -5,13 +5,9 @@ import SmartWebpackPlugin from '../src'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 
 const compiler = webpack({
-  entry: './test/test',
+  entry: './test/test.ts',
   plugins: [
-    new SmartWebpackPlugin({
-      lint: {
-        enable: false
-      }
-    }),
+    new SmartWebpackPlugin(),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       hash: true,

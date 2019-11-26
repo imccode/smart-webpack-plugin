@@ -19,10 +19,6 @@ class SmartWebpackPlugin {
 
   constructor(options: SmartWebpackPluginOptions = {}) {
     this.options = { ...this.options, ...options }
-    /**
-     * 打印队列消息
-     */
-    queueLog.apply()
   }
 
   /**
@@ -30,7 +26,7 @@ class SmartWebpackPlugin {
    * @param compiler
    */
   apply(compiler: Compiler) {
-    const { script, style, asset, lint, progress } = this.options
+    const { script, style, asset, lint, progress, server } = this.options
     compiler.options.plugins.push(
       ...[
         new ScriptWebpackPlugin(script),
@@ -42,8 +38,13 @@ class SmartWebpackPlugin {
     )
 
     if (NODE_ENV === 'development') {
-      compiler.options.plugins.push(new ServerWebpackPlugin())
+      compiler.options.plugins.push(new ServerWebpackPlugin(server))
     }
+
+    /**
+     * 打印队列消息
+     */
+    queueLog.apply()
   }
 }
 

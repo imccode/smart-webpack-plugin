@@ -1227,6 +1227,13 @@
     "@types/webpack-sources" "*"
     source-map "^0.6.0"
 
+"@types/ws@^6.0.3":
+  version "6.0.3"
+  resolved "https://npm.zhonganinfo.com/@types%2fws/-/ws-6.0.3.tgz#b772375ba59d79066561c8d87500144d674ba6b3"
+  integrity sha1-t3I3W6WdeQZlYcjYdQAUTWdLprM=
+  dependencies:
+    "@types/node" "*"
+
 "@vue/component-compiler-utils@^3.0.0":
   version "3.0.2"
   resolved "https://npm.zhonganonline.com/@vue%2fcomponent-compiler-utils/-/component-compiler-utils-3.0.2.tgz#7daf8aaf0d5faa66e7c8a1f6fea315630e45fbc9"
@@ -8801,7 +8808,7 @@ write@1.0.3:
   dependencies:
     mkdirp "^0.5.1"
 
-ws@^7.1.0:
+ws@^7.1.0, ws@^7.2.0:
   version "7.2.0"
   resolved "https://npm.zhonganinfo.com/ws/-/ws-7.2.0.tgz#422eda8c02a4b5dba7744ba66eebbd84bcef0ec7"
   integrity sha1-Qi7ajAKktdundEumbuu9hLzvDsc=

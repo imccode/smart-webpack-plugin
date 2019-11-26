@@ -1,23 +1,13 @@
 import { LintWebpackPluginOptions } from 'types'
 import { Compiler, Configuration } from 'webpack'
 import webpackConfig from './webpackConfig'
+import lintOptions from './options'
 
 /**
  * 代码校验webpack插件
  */
 class LintWebpackPlugin {
-  options: LintWebpackPluginOptions = {
-    enable: true,
-    fix: true,
-    eslint: {
-      fix: true,
-      enable: true
-    },
-    stylint: {
-      fix: true,
-      enable: true
-    }
-  }
+  options: LintWebpackPluginOptions = lintOptions
 
   webpackConfig: Configuration = {}
 
@@ -32,12 +22,12 @@ class LintWebpackPlugin {
               ...this.options.eslint,
               ...(options.eslint || {})
             },
-      stylint:
-        options.stylint === false
+      stylelint:
+        options.stylelint === false
           ? false
           : {
-              ...this.options.stylint,
-              ...(options.stylint || {})
+              ...this.options.stylelint,
+              ...(options.stylelint || {})
             }
     }
 

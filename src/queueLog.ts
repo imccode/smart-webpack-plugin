@@ -83,6 +83,8 @@ class QueueLog {
     this.message.forEach(({ type, text }) => {
       this.self[type](text)
     })
+
+    console.log('\n')
     this.message = []
   }
 }

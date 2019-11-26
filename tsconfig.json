@@ -12,7 +12,7 @@
     "resolveJsonModule": true,
     "rootDir": "./",
     "baseUrl": ".",
-    "lib": ["es2018.promise"]
+    "lib": ["es2018.promise", "dom", "scripthost"]
   },
   "exclude": ["node_modules"]
 }

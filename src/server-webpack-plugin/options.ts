@@ -1,7 +1,7 @@
 import { ServerWebpackPluginOptions } from 'types'
 
 const options: ServerWebpackPluginOptions = {
-  hmr: true,
+  hot: true,
   port: 8080,
   compress: false
 }

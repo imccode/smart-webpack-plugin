@@ -56,7 +56,8 @@
     "url-loader": "^2.3.0",
     "webpack": "^4.41.2",
     "webpack-log": "^3.0.1",
-    "webpack-plugin-serve": "^0.12.1"
+    "webpack-plugin-serve": "^0.12.1",
+    "ws": "^7.2.0"
   },
   "devDependencies": {
     "@types/chalk": "^2.2.0",
@@ -71,6 +72,7 @@
     "@types/terser-webpack-plugin": "^2.2.0",
     "@types/webpack": "^4.41.0",
     "@types/webpack-plugin-serve": "^0.10.0",
+    "@types/ws": "^6.0.3",
     "node-sass": "^4.13.0",
     "prettier": "1.19.1",
     "ts-node-dev": "^1.0.0-pre.43",
