@@ -1,7 +1,7 @@
 import { LintWebpackPluginOptions } from 'types'
 import { Compiler, Configuration } from 'webpack'
-import webpackConfig from './webpackConfig'
 import lintOptions from './options'
+import webpackConfig from './webpackConfig'
 
 /**
  * 代码校验webpack插件
@@ -39,7 +39,7 @@ class LintWebpackPlugin {
    * @param compiler
    */
   inject(compiler: Compiler) {
-    compiler.options.module.rules.push(...this.webpackConfig.module.rules)
+    compiler.options.plugins.push(...this.webpackConfig.plugins)
   }
 
   /**
@@ -47,10 +47,10 @@ class LintWebpackPlugin {
    * @param compiler
    */
   apply(compiler: Compiler) {
-    if (this.options.enable) {
-      compiler.options.plugins.push(...this.webpackConfig.plugins)
-      compiler.hooks.afterEnvironment.tap('LintWebpackPlugin', () => this.inject(compiler))
-    }
+    this.inject(compiler)
+    compiler.hooks.afterEnvironment.tap('LintWebpackPlugin', () => {
+      compiler.options.module.rules.push(...this.webpackConfig.module.rules)
+    })
   }
 }
 

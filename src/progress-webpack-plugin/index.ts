@@ -6,9 +6,7 @@ import webpackConfig from './webpackConfig'
  * 媒体资源webpack插件
  */
 class ProgressWebpackPlugin {
-  options: ProgressWebpackPluginOptions = {
-    enable: true
-  }
+  options: ProgressWebpackPluginOptions = {}
 
   webpackConfig: Configuration = {}
 
@@ -21,16 +19,16 @@ class ProgressWebpackPlugin {
    * 注入默认配置
    * @param compiler
    */
-  inject(compiler: Compiler) {}
+  inject(compiler: Compiler) {
+    compiler.options.plugins.push(...this.webpackConfig.plugins)
+  }
 
   /**
    * 执行插件
    * @param compiler
    */
   apply(compiler: Compiler) {
-    if (this.options.enable) {
-      compiler.options.plugins.push(...this.webpackConfig.plugins)
-    }
+    this.inject(compiler)
   }
 }
 

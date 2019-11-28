@@ -1,6 +1,7 @@
-import { SmartWebpackPluginOptions } from 'types'
+import { SmartWebpackPluginOptions, FrameworkState } from 'types'
 import { Compiler, Configuration } from 'webpack'
 import AssetWebpackPlugin from './asset-webpack-plugin'
+import { isVue, isReact } from './config'
 import { NODE_ENV } from './env'
 import LintWebpackPlugin from './lint-webpack-plugin'
 import ProgressWebpackPlugin from './progress-webpack-plugin'
@@ -27,17 +28,24 @@ class SmartWebpackPlugin {
    */
   apply(compiler: Compiler) {
     const { script, style, asset, lint, progress, server } = this.options
-    compiler.options.plugins.push(
-      ...[
-        new ScriptWebpackPlugin(script),
-        new StyleWebpackPlugin(style),
-        new AssetWebpackPlugin(asset),
-        new LintWebpackPlugin(lint),
-        new ProgressWebpackPlugin(progress)
-      ]
-    )
 
-    if (NODE_ENV === 'development') {
+    if (script !== false) {
+      compiler.options.plugins.push(new ScriptWebpackPlugin(script))
+    }
+    if (style !== false) {
+      compiler.options.plugins.push(new StyleWebpackPlugin(style))
+    }
+    if (asset !== false) {
+      compiler.options.plugins.push(new AssetWebpackPlugin(asset))
+    }
+    if (lint !== false) {
+      compiler.options.plugins.push(new LintWebpackPlugin(lint))
+    }
+    if (progress !== false) {
+      compiler.options.plugins.push(new ProgressWebpackPlugin(progress))
+    }
+
+    if (server !== false && NODE_ENV === 'development') {
       compiler.options.plugins.push(new ServerWebpackPlugin(server))
     }
 
@@ -49,3 +57,15 @@ class SmartWebpackPlugin {
 }
 
 export default SmartWebpackPlugin
+
+exports = SmartWebpackPlugin
+
+export {
+  SmartWebpackPlugin,
+  ScriptWebpackPlugin,
+  StyleWebpackPlugin,
+  AssetWebpackPlugin,
+  LintWebpackPlugin,
+  ProgressWebpackPlugin,
+  ServerWebpackPlugin
+}

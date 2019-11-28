@@ -1,4 +1,5 @@
 import { WSMessageType } from 'types'
+import querystring from 'querystring'
 
 interface Options {
   url: string
@@ -37,9 +38,11 @@ class ClientSocket {
   connect() {
     this.socket = new window.WebSocket(this.options.url, 'ws')
     this.socket.addEventListener('open', () => log('热更新初始化成功！'))
+    this.socket.addEventListener('close', () => log('已停止编译服务！'))
   }
 
   close() {
+    log('已停止编译服务！')
     this.socket && this.socket.close()
   }
 
@@ -52,16 +55,40 @@ class ClientSocket {
   }
 }
 
-const hotUpdate = async () => {
+const hotUpdate = async (now: number) => {
   // @ts-ignore
   const hot: HotType = module.hot
   if (hot) {
     let updatedModules: Array<number>
-    const status = hot.status()
-    console.log(status)
 
+    /**
+     * 执行更新
+     */
+    const hotApply = async () => {
+      try {
+        const outdatedModules = await hot.apply({
+          ignoreUnaccepted: true,
+          ignoreDeclined: true,
+          ignoreErrored: true,
+          onErrored(data) {
+            console.error('发生错误:\n', new Error(data))
+          }
+        })
+
+        log(
+          '检测到代码更变，编译完成，局部页面已更新！用时：' +
+            ((Date.now() - now) / 1000).toFixed(2) +
+            's'
+        )
+      } catch (error) {
+        console.error(new Error(error))
+        return
+      }
+    }
+
+    const status = hot.status()
     if (['fail', 'abort'].includes(status)) {
-      log('编译完成，整页重新加载！')
+      log('检测到代码更变，编译完成，整页重新加载！')
       window.location.reload()
       return
     }
@@ -69,53 +96,56 @@ const hotUpdate = async () => {
     if (status === 'idle') {
       try {
         updatedModules = await hot.check()
-        if (!updatedModules) return
+        if (updatedModules) {
+          hotUpdate(now)
+          return
+        }
+        hotApply()
       } catch (error) {
-        console.error(error)
+        console.error(new Error(error))
         return
       }
     }
 
-    try {
-      const outdatedModules = await hot.apply({
-        ignoreUnaccepted: true,
-        ignoreDeclined: true,
-        ignoreErrored: true,
-        onErrored(data) {
-          console.error('发生错误:\n', data)
-        }
-      })
-      log('编译完成，页面部分更新！')
-
-      const unacceptedModules = updatedModules.filter(
-        moduleId => outdatedModules && !outdatedModules.includes(moduleId)
-      )
-      if (unacceptedModules.length > 0) window.location.reload()
-    } catch (error) {
-      console.error(error)
+    if (status === 'ready') {
+      hotApply()
     }
   }
 }
 
 const client = buildHash => {
+  // @ts-ignore
+  const params: { wsPort: number } = querystring.parse(__resourceQuery.slice(1))
+
   const socket = new ClientSocket({
-    url: 'ws://127.0.0.1:55551'
+    url: `ws://127.0.0.1:${params.wsPort || 55555}`
   })
 
   window.addEventListener('beforeunload', socket.close)
 
   socket.addEventListener('message', message => {
     const { type, data }: { type: WSMessageType; data?: any } = JSON.parse(message.data)
+    let now = Date.now()
     switch (type) {
       case 'beforeUpdate':
-        log('正在编译最新代码...')
+        {
+          log(`监测到${data.fileName}文件变动，正在编译更新...`)
+          now = data.changeTime
+        }
+        break
+      case 'invalidUpdate':
+        log(`无效更新，没有实质性的内容变动!`)
         break
       case 'update':
-        buildHash === data ? log('代码无改变，暂不更新!') : hotUpdate()
+        buildHash !== data && hotUpdate(now)
+        break
+      case 'error':
+        console.error(`编译发生错误`, new Error(data))
         break
     }
   })
 }
+
 ;(() => {
   let hash = '<unknown>'
 

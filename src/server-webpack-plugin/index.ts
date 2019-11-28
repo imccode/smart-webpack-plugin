@@ -1,17 +1,16 @@
 import { ServerWebpackPluginOptions } from 'types'
-import { Compiler, Entry, EntryFunc, Configuration } from 'webpack'
+import { Compiler, Configuration, Entry, EntryFunc } from 'webpack'
+import { isReact } from '../config'
 import serverOptions from './options'
-import webpackConfig from './webpackConfig'
 import Serve from './serve'
-
-const pluginName = 'ServerWebpackPlugin'
+import webpackConfig from './webpackConfig'
+import path from 'path'
 
 /**
  * server webpack插件
  */
 class ServerWebpackPlugin {
   options: ServerWebpackPluginOptions = {
-    enable: process.env.NODE_ENV === 'development',
     ...serverOptions
   }
 
@@ -24,13 +23,44 @@ class ServerWebpackPlugin {
   /**
    * 构造一个新的entry
    */
-  structureEntry(entry: string | string[] | Entry | EntryFunc) {
-    const entryFileName = './src/server-webpack-plugin/client.ts'
-
+  structureEntry(entry: string | string[] | Entry | EntryFunc, wsPort: number) {
+    const entryFileName = path.resolve(__dirname, `./client?wsPort=${wsPort || 55555}`)
+    let entryResult = []
     if (typeof entry === 'string') {
-      return [entry, entryFileName]
+      entryResult = [entry, entryFileName]
     } else if (Array.isArray(entry)) {
-      return [...entry, entryFileName]
+      entryResult = [...entry, entryFileName]
+    }
+
+    if (isReact) {
+      entryResult = ['react-hot-loader/patch', ...entryResult]
+    }
+
+    return entryResult
+  }
+
+  /**
+   * 注入默认热更新服务
+   * @param compiler
+   */
+  injectHotServer(compiler: Compiler) {
+    const { entry } = compiler.options
+
+    const serve = new Serve(this.options, compiler)
+    if (typeof entry === 'object') {
+      Object.keys(entry).forEach(key => {
+        compiler.options.entry[key] = this.structureEntry(compiler.options.entry[key], serve.wsPort)
+      })
+    } else if (typeof entry === 'function') {
+      const entryConfig = entry()
+      compiler.options.entry = {}
+      if (typeof entryConfig === 'object') {
+        Object.keys(entry).forEach(key => {
+          compiler.options.entry[key] = this.structureEntry(compiler.options.entry[key], serve.wsPort)
+        })
+      }
+    } else {
+      compiler.options.entry = this.structureEntry(compiler.options.entry, serve.wsPort)
     }
   }
 
@@ -39,34 +69,19 @@ class ServerWebpackPlugin {
    * @param compiler
    */
   inject(compiler: Compiler) {
-    const { plugins, mode, stats, devtool, watch, output } = this.webpackConfig
-    const { entry } = compiler.options
+    const { plugins, mode, stats, devtool, watch, output, resolve } = this.webpackConfig
 
     compiler.options.mode = mode
-    compiler.options.stats = stats
     compiler.options.devtool = devtool
+    compiler.options.stats = stats
     compiler.options.output.filename = output.filename
     compiler.options.output.chunkFilename = output.chunkFilename
     compiler.options.watch = watch
-    compiler.options.plugins.push(...plugins)
-
-    if (this.options.hot) {
-      if (typeof entry === 'object') {
-        Object.keys(entry).forEach(key => {
-          compiler.options.entry[key] = this.structureEntry(compiler.options.entry[key])
-        })
-      } else if (typeof entry === 'function') {
-        const entryConfig = entry()
-        compiler.options.entry = {}
-        if (typeof entryConfig === 'object') {
-          Object.keys(entry).forEach(key => {
-            compiler.options.entry[key] = this.structureEntry(compiler.options.entry[key])
-          })
-        }
-      } else {
-        compiler.options.entry = this.structureEntry(compiler.options.entry)
-      }
+    compiler.options.resolve.alias = {
+      ...compiler.options.resolve.alias,
+      ...resolve.alias
     }
+    compiler.options.plugins.push(...plugins)
   }
 
   /**
@@ -74,38 +89,8 @@ class ServerWebpackPlugin {
    * @param compiler
    */
   apply(compiler: Compiler) {
-    if (this.options.enable) {
-      const { done, watchClose, watchRun } = compiler.hooks
-
-      this.inject(compiler)
-
-      const serve = new Serve(this.options, compiler)
-      if (this.options.hot) {
-        serve.openWS()
-
-        /**
-         * 编译(compilation)完成
-         */
-        done.tap(pluginName, stats => {
-          serve.sendWS('update', stats.hash)
-        })
-
-        /**
-         * 监听模式下，一个新的编译(compilation)触发之后，执行一个插件，但是是在实际编译开始之前
-         */
-        watchRun.tap(pluginName, stats => {
-          serve.sendWS('beforeUpdate')
-        })
-
-        /**
-         * 监听模式停止
-         */
-        watchClose.tap(pluginName, () => {
-          serve.sendWS('close')
-          serve.closeWS()
-        })
-      }
-    }
+    this.inject(compiler)
+    this.injectHotServer(compiler)
   }
 }
 

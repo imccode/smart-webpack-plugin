@@ -1,8 +1,8 @@
 import path from 'path'
-import { root } from '../config'
-import { NODE_ENV } from '../env'
 import { StyleWebpackPluginOptions } from 'types'
 import { Compiler, Configuration } from 'webpack'
+import { isVue, root } from '../config'
+import { NODE_ENV } from '../env'
 import webpackConfig from './webpackConfig'
 
 /**
@@ -10,8 +10,7 @@ import webpackConfig from './webpackConfig'
  */
 class StyleWebpackPlugin {
   options: StyleWebpackPluginOptions = {
-    enable: true,
-    cacheDirectory: NODE_ENV === 'development' ? path.resolve(root, '.cache', 'babel') : false
+    cacheDirectory: NODE_ENV === 'development' ? path.resolve(root, '.cache', 'style') : false
   }
 
   webpackConfig: Configuration = {}
@@ -33,8 +32,15 @@ class StyleWebpackPlugin {
    * @param compiler
    */
   inject(compiler: Compiler) {
-    compiler.options.module.rules.push(...this.webpackConfig.module.rules)
     compiler.options.plugins.push(...this.webpackConfig.plugins)
+  }
+
+  /**
+   * 注入默认Loader配置
+   * @param compiler
+   */
+  injectRules(compiler: Compiler) {
+    compiler.options.module.rules.push(...this.webpackConfig.module.rules)
   }
 
   /**
@@ -42,8 +48,11 @@ class StyleWebpackPlugin {
    * @param compiler
    */
   apply(compiler: Compiler) {
-    if (this.options.enable) {
-      compiler.hooks.afterEnvironment.tap('StyleWebpackPlugin', () => this.inject(compiler))
+    this.inject(compiler)
+    if (isVue) {
+      this.injectRules(compiler)
+    } else {
+      compiler.hooks.afterEnvironment.tap('StyleWebpackPlugin', () => this.injectRules(compiler))
     }
   }
 }

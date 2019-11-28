@@ -1,4 +1,4 @@
-import { AssetWebpackPluginOptions } from 'types'
+import { AssetWebpackPluginOptions, FrameworkState } from 'types'
 import { Compiler, Configuration } from 'webpack'
 import webpackConfig from './webpackConfig'
 
@@ -12,17 +12,11 @@ class AssetWebpackPlugin {
 
   webpackConfig: Configuration = {}
 
-  constructor(options: AssetWebpackPluginOptions = {}) {
+  private framework: FrameworkState
+  
+  constructor(options: AssetWebpackPluginOptions = {}, framework: FrameworkState = {}) {
     this.options = { ...this.options, ...options }
     this.webpackConfig = webpackConfig(this.options)
-  }
-
-  /**
-   * 注入默认配置
-   * @param compiler
-   */
-  inject(compiler: Compiler) {
-    compiler.options.module.rules.push(...this.webpackConfig.module.rules)
   }
 
   /**
@@ -30,9 +24,9 @@ class AssetWebpackPlugin {
    * @param compiler
    */
   apply(compiler: Compiler) {
-    if (this.options.enable) {
-      compiler.hooks.afterEnvironment.tap('AssetWebpackPlugin', () => this.inject(compiler))
-    }
+      compiler.hooks.afterEnvironment.tap('AssetWebpackPlugin', () => {
+        compiler.options.module.rules.push(...this.webpackConfig.module.rules)
+      })
   }
 }
 

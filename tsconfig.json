@@ -1,6 +1,7 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
+    "jsx": "react",
     "allowJs": false,
     "module": "commonjs",
     "target": "es2018",
@@ -10,9 +11,10 @@
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "rootDir": "./",
+    "rootDir": "./src",
     "baseUrl": ".",
+    "outDir": "lib",
     "lib": ["es2018.promise", "dom", "scripthost"]
   },
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "test"]
 }

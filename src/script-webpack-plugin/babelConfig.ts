@@ -3,6 +3,7 @@ import { cosmiconfigSync } from 'cosmiconfig'
 import { BabelConfiguration, SmartCosmiconfigResult } from 'types'
 import { isReact, isTypescript } from '../config'
 import queueLog from '../queueLog'
+import { NODE_ENV } from '../env'
 
 const defaultConfig: BabelConfiguration = {
   /**
@@ -99,6 +100,9 @@ if (isTypescript) {
 if (isReact) {
   queueLog.info(`以使用${chalk.green('React')}框架专属配置`)
   config.presets.unshift(['@babel/preset-react', { useBuiltIns: 'usage' }])
+  if (NODE_ENV === 'development') {
+    config.plugins.push('react-hot-loader/babel')
+  }
 }
 
 export default config

@@ -1,16 +1,16 @@
 {
   "name": "smart-webpack-plugin",
   "version": "0.0.1",
-  "description": "众安直营前端相关工具集合-脚手架",
+  "description": "一个智能匹配项目需要的webpack配置的插件",
   "main": "lib/index.js",
   "types": "types.d.ts",
   "author": "ccode",
   "license": "MIT",
   "engines": {
-    "node": ">=8.9.0"
+    "node": ">=10.0.0"
   },
   "scripts": {
-    "test": "ts-node ./test/main.ts"
+    "test": "ts-node ./test/test"
   },
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.7.0",
@@ -24,6 +24,7 @@
     "@babel/preset-env": "^7.7.1",
     "@babel/preset-react": "^7.7.0",
     "@babel/preset-typescript": "^7.7.2",
+    "@hot-loader/react-dom": "^16.11.0",
     "babel-loader": "^8.0.6",
     "babel-plugin-lodash": "^3.3.4",
     "cache-loader": "^4.1.0",
@@ -45,6 +46,8 @@
     "postcss-loader": "^3.0.0",
     "postcss-preset-env": "^6.7.0",
     "postcss-url": "^8.0.0",
+    "querystring": "^0.2.0",
+    "react-hot-loader": "^4.12.18",
     "sass-loader": "^8.0.0",
     "simple-progress-webpack-plugin": "^1.1.2",
     "style-loader": "^1.0.0",
@@ -54,12 +57,13 @@
     "thread-loader": "^2.1.3",
     "ts-node": "^8.4.1",
     "url-loader": "^2.3.0",
+    "vue-style-loader": "^4.1.2",
     "webpack": "^4.41.2",
     "webpack-log": "^3.0.1",
-    "webpack-plugin-serve": "^0.12.1",
     "ws": "^7.2.0"
   },
   "devDependencies": {
+    "@dm/pack": "^1.0.5",
     "@types/chalk": "^2.2.0",
     "@types/compression-webpack-plugin": "^2.0.1",
     "@types/html-webpack-plugin": "^3.2.1",
@@ -75,10 +79,10 @@
     "@types/ws": "^6.0.3",
     "node-sass": "^4.13.0",
     "prettier": "1.19.1",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
     "ts-node-dev": "^1.0.0-pre.43",
-    "typescript": "^3.7.2",
-    "vue-loader": "^15.7.2",
-    "vue-style-loader": "^4.1.2"
+    "typescript": "^3.7.2"
   },
   "prettier": {
     "printWidth": 100,

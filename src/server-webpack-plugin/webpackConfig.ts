@@ -1,16 +1,12 @@
 import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin'
 import { ServerWebpackPluginOptions } from 'types'
-import { Configuration, Compiler, HotModuleReplacementPlugin } from 'webpack'
+import { Configuration, HotModuleReplacementPlugin } from 'webpack'
 import { localIps } from '../utils'
+import { isReact, root } from '../config'
+import path from 'path'
 
 export default (options: ServerWebpackPluginOptions) => {
-  const newOptions: ServerWebpackPluginOptions = { ...options }
-  delete newOptions.enable
-
   const config: Configuration = {
-    /**
-     * 最小化显示构建信息
-     */
     stats: 'minimal',
     /**
      * 表示当前webpack环境为开发环境
@@ -19,16 +15,31 @@ export default (options: ServerWebpackPluginOptions) => {
     /**
      * 浏览器debug sourceMap 模式
      */
-    devtool: 'cheap-module-eval-source-map',
+    devtool: 'eval-source-map',
     output: {
+      path: path.resolve(root, '.cache', 'server/dist'),
+      /**
+       * 导出文件名设置
+       *
+       * 根据文件chunk内容生成名字
+       */
       filename: '[name].[hash:8].js',
+      /**
+       * 导出分块(chunk)文件名设置
+       *
+       * 根据文件chunk内容生成名字
+       */
       chunkFilename: '[name].chunk-[hash:8].js'
+    },
+    resolve: {
+      alias: {}
     },
     /**
      * 监听文件改动
      */
     watch: true,
     plugins: [
+      new HotModuleReplacementPlugin(),
       /**
        * 只显示核心错误
        */
@@ -42,8 +53,8 @@ export default (options: ServerWebpackPluginOptions) => {
     ]
   }
 
-  if (options.hot) {
-    config.plugins.push(new HotModuleReplacementPlugin())
+  if (isReact) {
+    config.resolve.alias['react-dom'] = '@hot-loader/react-dom'
   }
 
   return config

@@ -10,9 +10,9 @@ import chalk = require('chalk')
 export default (options: LintWebpackPluginOptions) => {
   let regExpStr = isTypescript ? '.(t|j)s' : '.js'
   if (isVue) {
-    regExpStr = '.(js|vue)'
+    regExpStr = '.(js|ts|vue)'
   } else if (isReact) {
-    regExpStr = isTypescript ? '.tsx?' : '.jsx?'
+    regExpStr += 'x?'
   }
 
   const config: Configuration = {

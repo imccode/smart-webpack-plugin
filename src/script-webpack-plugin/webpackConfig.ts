@@ -1,20 +1,39 @@
+import chalk from 'chalk'
 import CompressionWebpackPlugin from 'compression-webpack-plugin'
-import { NODE_ENV } from '../env'
 import TerserWebpackPlugin from 'terser-webpack-plugin'
 import { ScriptWebpackPluginOptions } from 'types'
 import VueLoaderPlugin from 'vue-loader/lib/plugin'
 import { Configuration } from 'webpack'
 import { isReact, isTypescript, isVue, root } from '../config'
+import { NODE_ENV } from '../env'
+import queueLog from '../queueLog'
 import babelConfig from './babelConfig'
 
 export default (options: ScriptWebpackPluginOptions) => {
   let regExpStr = isTypescript ? '.(t|j)s' : '.js'
 
   if (isReact) {
-    regExpStr = isTypescript ? '.tsx?' : '.jsx?'
+    regExpStr += 'x?'
   }
 
   const config: Configuration = {
+    /**
+     * 导出配置
+     */
+    output: {
+      /**
+       * 导出文件名设置
+       *
+       * 根据文件chunk内容生成名字
+       */
+      filename: 'js/[name].[contenthash:8].min.js',
+      /**
+       * 导出分块(chunk)文件名设置
+       *
+       * 根据文件chunk内容生成名字
+       */
+      chunkFilename: 'js/[name].chunk-[contenthash:8].min.js'
+    },
     module: {
       rules: [
         {
@@ -47,22 +66,41 @@ export default (options: ScriptWebpackPluginOptions) => {
         }
       ]
     },
+    resolve: {
+      extensions: ['.js']
+    },
     plugins: []
+  }
+
+  if (isTypescript) {
+    config.resolve.extensions.push('.ts')
   }
 
   /**
    * 支持vue
    */
   if (isVue) {
-    config.module.rules.push({
-      test: /\.vue$/,
-      use: [
-        {
-          loader: 'vue-loader'
-        }
-      ]
-    })
+    queueLog.info(`以使用${chalk.green('Vue')}框架专属配置`)
     config.plugins.push(new VueLoaderPlugin())
+    config.resolve.extensions.push('.vue')
+  }
+
+  /**
+   * 支持react 的 state 热更新
+   */
+  if (isReact) {
+    config.resolve.extensions.push(isTypescript ? '.tsx' : '.jsx')
+    if (NODE_ENV === 'development') {
+      const rulesUse = config.module.rules[0].use
+      config.module.rules[0].use = [
+        rulesUse[0],
+        {
+          loader: 'react-hot-loader/webpack'
+        },
+        // @ts-ignore
+        ...rulesUse.slice(1)
+      ]
+    }
   }
 
   /**

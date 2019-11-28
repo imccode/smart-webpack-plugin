@@ -3,8 +3,21 @@ export = SmartWebpackPlugin
 declare namespace SmartWebpackPlugin {
   type ArrayOptions = Array<string | Array<string | { [key: string]: any }>>
 
-  type WSMessageType = 'beforeUpdate' | 'update' | 'close'
+  type WSMessageType = 'beforeUpdate' | 'invalidUpdate' | 'update' | 'error'
 
+  /**
+   * 使用了那些框架
+   */
+  interface FrameworkState {
+    /**
+     * 是否使用了vue框架
+     */
+    isVue?: boolean
+    /**
+     * 是否使用了react框架
+     */
+    isReact?: boolean
+  }
   /**
    * CosmiconfigResult
    */
@@ -77,27 +90,27 @@ declare namespace SmartWebpackPlugin {
     /**
      * script-webpack-plugin 脚本资源 插件的可配参数
      */
-    script?: ScriptWebpackPluginOptions
+    script?: false | ScriptWebpackPluginOptions
     /**
      * style-webpack-plugin 样式资源 插件的可配参数
      */
-    style?: StyleWebpackPluginOptions
+    style?: false | StyleWebpackPluginOptions
     /**
      * asset-webpack-plugin 媒体资源 插件的可配参数
      */
-    asset?: AssetWebpackPluginOptions
+    asset?: false | AssetWebpackPluginOptions
     /**
      * lint-webpack-plugin 代码校验 插件的可配参数
      */
-    lint?: LintWebpackPluginOptions
+    lint?: false | LintWebpackPluginOptions
     /**
      * progress-webpack-plugin 构建进度 插件的可配参数
      */
-    progress?: ProgressWebpackPluginOptions
+    progress?: false | ProgressWebpackPluginOptions
     /**
      * server-webpack-plugin 本地开发环境 插件的可配参数
      */
-    server?: ServerWebpackPluginOptions
+    server?: false | ServerWebpackPluginOptions
   }
 
   /**
@@ -116,10 +129,6 @@ declare namespace SmartWebpackPlugin {
    * style-webpack-plugin 样式资源 插件的可配参数
    */
   interface StyleWebpackPluginOptions {
-    /**
-     * 是否启用
-     */
-    enable?: boolean
     /**
      * 启用缓存，指定缓存路径
      *
@@ -147,21 +156,12 @@ declare namespace SmartWebpackPlugin {
   /**
    * asset-webpack-plugin 媒体资源 插件的可配参数
    */
-  interface AssetWebpackPluginOptions {
-    /**
-     * 是否启用
-     */
-    enable?: boolean
-  }
+  interface AssetWebpackPluginOptions {}
 
   /**
    * lint-webpack-plugin 代码校验 插件的可配参数
    */
   interface LintWebpackPluginOptions {
-    /**
-     * 是否启用
-     */
-    enable?: boolean
     /**
      * 是否在校验之前自动修复不规则的代码
      */
@@ -200,12 +200,7 @@ declare namespace SmartWebpackPlugin {
   /**
    * progress-webpack-plugin 构建进度 插件的可配参数
    */
-  interface ProgressWebpackPluginOptions {
-    /**
-     * 是否启用
-     */
-    enable?: boolean
-  }
+  interface ProgressWebpackPluginOptions {}
 
   /**
    * server-webpack-plugin 本地开发环境 插件的可配参数
@@ -213,14 +208,6 @@ declare namespace SmartWebpackPlugin {
    * options docs: https://github.com/shellscape/webpack-plugin-serve
    */
   interface ServerWebpackPluginOptions {
-    /**
-     * 是否启用
-     */
-    enable?: boolean
-    /**
-     * 启用热更新
-     */
-    hot?: boolean
     /**
      * 开发端口
      */

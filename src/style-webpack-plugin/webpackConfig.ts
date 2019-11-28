@@ -1,10 +1,10 @@
 import CompressionWebpackPlugin from 'compression-webpack-plugin'
-import { default as miniCssExtractPlugin, default as MiniCssExtractPlugin } from 'mini-css-extract-plugin'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin'
-import { NODE_ENV } from '../env'
 import { StyleWebpackPluginOptions } from 'types'
 import { Configuration, RuleSetUse, RuleSetUseItem } from 'webpack'
 import { isVue } from '../config'
+import { NODE_ENV } from '../env'
 import postcssConfig from './postcssConfig'
 
 export default (options: StyleWebpackPluginOptions) => {
@@ -12,9 +12,9 @@ export default (options: StyleWebpackPluginOptions) => {
    * 提取样式到单个css文件
    */
   const miniCssExtractConf: RuleSetUseItem = {
-    loader: miniCssExtractPlugin.loader,
+    loader: MiniCssExtractPlugin.loader,
     options: {
-      hmr: false,
+      hmr: NODE_ENV === 'development',
       reloadAll: true
     }
   }
@@ -53,7 +53,7 @@ export default (options: StyleWebpackPluginOptions) => {
   /**
    * 启用缓存
    */
-  if (options.cacheDirectory) {
+  if (NODE_ENV === 'development' && options.cacheDirectory) {
     commonLoaders.unshift({
       loader: 'cache-loader',
       options: {
