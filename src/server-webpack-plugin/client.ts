@@ -1,4 +1,4 @@
-import { WSMessageType } from 'types'
+import { WSMessageType } from 'index'
 import querystring from 'querystring'
 
 interface Options {
@@ -55,7 +55,7 @@ class ClientSocket {
   }
 }
 
-const hotUpdate = async (now: number) => {
+const hotUpdate = async (time: number) => {
   // @ts-ignore
   const hot: HotType = module.hot
   if (hot) {
@@ -66,7 +66,7 @@ const hotUpdate = async (now: number) => {
      */
     const hotApply = async () => {
       try {
-        const outdatedModules = await hot.apply({
+        await hot.apply({
           ignoreUnaccepted: true,
           ignoreDeclined: true,
           ignoreErrored: true,
@@ -75,11 +75,7 @@ const hotUpdate = async (now: number) => {
           }
         })
 
-        log(
-          '检测到代码更变，编译完成，局部页面已更新！用时：' +
-            ((Date.now() - now) / 1000).toFixed(2) +
-            's'
-        )
+        log('检测到代码更变，编译完成，局部页面已更新！用时：' + (time / 1000).toFixed(2) + 's')
       } catch (error) {
         console.error(new Error(error))
         return
@@ -97,7 +93,7 @@ const hotUpdate = async (now: number) => {
       try {
         updatedModules = await hot.check()
         if (updatedModules) {
-          hotUpdate(now)
+          hotUpdate(time)
           return
         }
         hotApply()
@@ -118,34 +114,35 @@ const client = buildHash => {
   const params: { wsPort: number } = querystring.parse(__resourceQuery.slice(1))
 
   const socket = new ClientSocket({
-    url: `ws://127.0.0.1:${params.wsPort || 55555}`
+    url: `ws://127.0.0.1:${params.wsPort}/hot`
   })
 
   window.addEventListener('beforeunload', socket.close)
 
   socket.addEventListener('message', message => {
     const { type, data }: { type: WSMessageType; data?: any } = JSON.parse(message.data)
-    let now = Date.now()
     switch (type) {
       case 'beforeUpdate':
         {
-          log(`监测到${data.fileName}文件变动，正在编译更新...`)
-          now = data.changeTime
+          const { fileName, changeTime }: { fileName: string; changeTime: number } = data
+          log(`监测到${fileName}文件变动，正在编译更新...`)
         }
         break
       case 'invalidUpdate':
         log(`无效更新，没有实质性的内容变动!`)
         break
       case 'update':
-        buildHash !== data && hotUpdate(now)
+        {
+          const { hash, time }: { hash: string; time: number } = data
+          buildHash !== hash && hotUpdate(time)
+        }
         break
       case 'error':
-        console.error(`编译发生错误`, new Error(data))
+        console.error(`编译发生错误, 具体请查看终端`, new Error(data))
         break
     }
   })
 }
-
 ;(() => {
   let hash = '<unknown>'
 

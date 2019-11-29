@@ -1,5 +1,5 @@
 import path from 'path'
-import { ScriptWebpackPluginOptions } from 'types'
+import { ScriptWebpackPluginOptions } from 'index'
 import { Compiler, Configuration } from 'webpack'
 import { isVue, root } from '../config'
 import { NODE_ENV } from '../env'
@@ -10,7 +10,8 @@ import webpackConfig from './webpackConfig'
  */
 class ScriptWebpackPlugin {
   options: ScriptWebpackPluginOptions = {
-    cacheDirectory: NODE_ENV === 'development' ? path.resolve(root, '.cache', 'script') : false
+    cacheDirectory: NODE_ENV === 'development' ? path.resolve(root, '.cache', 'script') : false,
+    dropConsole: true
   }
 
   webpackConfig: Configuration = {}
@@ -38,7 +39,7 @@ class ScriptWebpackPlugin {
    * @param compiler
    */
   inject(compiler: Compiler) {
-    const { plugins, output, resolve } = this.webpackConfig
+    const { plugins, output, resolve, optimization } = this.webpackConfig
     this.injectVue(compiler)
     compiler.options.output.filename = output.filename
     compiler.options.output.chunkFilename = output.chunkFilename
@@ -46,6 +47,17 @@ class ScriptWebpackPlugin {
       new Set([...compiler.options.resolve.extensions, ...resolve.extensions])
     )
     compiler.options.plugins.push(...plugins)
+
+    if (NODE_ENV === 'production') {
+      compiler.options.optimization = {
+        ...compiler.options.optimization,
+        ...optimization,
+        splitChunks: {
+          ...compiler.options.optimization.splitChunks,
+          ...optimization.splitChunks
+        }
+      }
+    }
   }
 
   /**

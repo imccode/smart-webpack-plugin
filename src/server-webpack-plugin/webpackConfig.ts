@@ -1,13 +1,14 @@
 import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin'
-import { ServerWebpackPluginOptions } from 'types'
-import { Configuration, HotModuleReplacementPlugin } from 'webpack'
-import { localIps } from '../utils'
-import { isReact, root } from '../config'
 import path from 'path'
+import { ServerWebpackPluginOptions } from 'index'
+import { Configuration, HotModuleReplacementPlugin } from 'webpack'
+import { isReact, root } from '../config'
+import { localIps } from '../utils'
 
 export default (options: ServerWebpackPluginOptions) => {
   const config: Configuration = {
-    stats: 'minimal',
+    stats: false,
+    performance: false,
     /**
      * 表示当前webpack环境为开发环境
      */
@@ -23,16 +24,18 @@ export default (options: ServerWebpackPluginOptions) => {
        *
        * 根据文件chunk内容生成名字
        */
-      filename: '[name].[hash:8].js',
+      filename: 'js/[name].[hash:8].js',
       /**
        * 导出分块(chunk)文件名设置
        *
        * 根据文件chunk内容生成名字
        */
-      chunkFilename: '[name].chunk-[hash:8].js'
+      chunkFilename: 'js/[name].chunk-[hash:8].js'
     },
     resolve: {
-      alias: {}
+      alias: {
+        'vue$': 'vue/dist/vue.esm.js'
+      }
     },
     /**
      * 监听文件改动

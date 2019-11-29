@@ -1,13 +1,14 @@
 import Koa from 'koa'
 import koaStatic from 'koa-static'
 import koaCompress from 'koa-compress'
-import { ServerWebpackPluginOptions, WSMessageType } from 'types'
+import formatError from './formatErrors'
+import { ServerWebpackPluginOptions, WSMessageType } from 'index'
 import { Compiler } from 'webpack'
 import WebSocket from 'ws'
 
 class Serve {
   private options: ServerWebpackPluginOptions
-  private ws: WebSocket
+  private socket: WebSocket
   private httpServer: Koa<Koa.DefaultState, Koa.DefaultContext>
   private wsServer: WebSocket.Server
   private compiler: Compiler
@@ -25,8 +26,8 @@ class Serve {
       try {
         this.wsPort = Math.floor(Math.random() * 10000 + 50000)
         this.wsServer = new WebSocket.Server({
-          noServer: false,
-          port: this.wsPort
+          port: this.wsPort,
+          noServer: false
         })
       } catch (error) {
         createWsServer()
@@ -50,8 +51,8 @@ class Serve {
    * 打开长连接
    */
   openWS() {
-    this.wsServer.on('connection', ws => {
-      this.ws = ws
+    this.wsServer.on('connection', socket => {
+      this.socket = socket
       this.hooks()
     })
   }
@@ -60,19 +61,10 @@ class Serve {
    * 发送长连接数据-到客户端
    * @param data 发送的数据
    */
-  sendWS(type: WSMessageType, data?: any): Promise<Error | undefined> {
-    return new Promise(resolve => {
-      if (this.ws)
-        this.ws
-          ? this.ws.send(
-              JSON.stringify({
-                type,
-                data
-              }),
-              (err?: Error) => resolve(err)
-            )
-          : resolve(new Error('长连接还未创建成功'))
-    })
+  sendWS(type: WSMessageType, data?: any) {
+    if (this.socket) {
+      this.socket.send(JSON.stringify({ type, data }))
+    }
   }
 
   /**
@@ -109,11 +101,14 @@ class Serve {
       lastHash = stats.hash
 
       if (stats.hasErrors()) {
-        this.sendWS('error', stats.toString())
+        this.sendWS(
+          'error',
+          stats.compilation.errors.map(({ module }) => module.resource).join(',')
+        )
         return
       }
 
-      this.sendWS('update', stats.hash)
+      this.sendWS('update', { hash: stats.hash, time: stats.endTime - stats.startTime })
     })
   }
 }

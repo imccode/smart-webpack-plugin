@@ -1,4 +1,4 @@
-import { LintWebpackPluginOptions } from 'types'
+import { LintWebpackPluginOptions } from 'index'
 import { Compiler, Configuration } from 'webpack'
 import lintOptions from './options'
 import webpackConfig from './webpackConfig'

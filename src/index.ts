@@ -1,7 +1,6 @@
-import { SmartWebpackPluginOptions, FrameworkState } from 'types'
+import { SmartWebpackPluginOptions } from 'index'
 import { Compiler, Configuration } from 'webpack'
 import AssetWebpackPlugin from './asset-webpack-plugin'
-import { isVue, isReact } from './config'
 import { NODE_ENV } from './env'
 import LintWebpackPlugin from './lint-webpack-plugin'
 import ProgressWebpackPlugin from './progress-webpack-plugin'
@@ -58,14 +57,7 @@ class SmartWebpackPlugin {
 
 export default SmartWebpackPlugin
 
-exports = SmartWebpackPlugin
+module.exports = SmartWebpackPlugin
 
-export {
-  SmartWebpackPlugin,
-  ScriptWebpackPlugin,
-  StyleWebpackPlugin,
-  AssetWebpackPlugin,
-  LintWebpackPlugin,
-  ProgressWebpackPlugin,
-  ServerWebpackPlugin
-}
+export { SmartWebpackPlugin, ScriptWebpackPlugin, StyleWebpackPlugin, AssetWebpackPlugin, LintWebpackPlugin, ProgressWebpackPlugin, ServerWebpackPlugin }
+

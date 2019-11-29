@@ -2,14 +2,21 @@
   <div>
     <div class="aa">{{ text }}</div>
     <img src="./52232719.jpeg" alt="">
+    <button @click="handleClick">+11</button>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   data() {
     return {
       text: 123
+    }
+  },
+  methods: {
+    handleClick() {
+      console.log('123456')
+      this.text += 1
     }
   }
 }
@@ -17,7 +24,7 @@ export default {
 
 <style lang="scss" scoped>
 @import './style.scss';
-.a {
-  font-size: 12px;
+.aa {
+  font-size: 200px;
 }
 </style>

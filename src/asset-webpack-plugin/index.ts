@@ -1,4 +1,4 @@
-import { AssetWebpackPluginOptions, FrameworkState } from 'types'
+import { AssetWebpackPluginOptions, FrameworkState } from 'index'
 import { Compiler, Configuration } from 'webpack'
 import webpackConfig from './webpackConfig'
 

@@ -1,4 +1,4 @@
-import { AssetWebpackPluginOptions } from 'types'
+import { AssetWebpackPluginOptions } from 'index'
 import { Configuration } from 'webpack'
 import SimpleProgressWebpackPlugin from 'simple-progress-webpack-plugin'
 

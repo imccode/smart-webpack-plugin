@@ -1,7 +1,6 @@
-import { ServerWebpackPluginOptions } from 'types'
+import { ServerWebpackPluginOptions } from 'index'
 import { Compiler, Configuration, Entry, EntryFunc } from 'webpack'
 import { isReact } from '../config'
-import serverOptions from './options'
 import Serve from './serve'
 import webpackConfig from './webpackConfig'
 import path from 'path'
@@ -11,7 +10,8 @@ import path from 'path'
  */
 class ServerWebpackPlugin {
   options: ServerWebpackPluginOptions = {
-    ...serverOptions
+    port: 8080,
+    compress: false
   }
 
   webpackConfig: Configuration = webpackConfig(this.options)
@@ -27,13 +27,13 @@ class ServerWebpackPlugin {
     const entryFileName = path.resolve(__dirname, `./client?wsPort=${wsPort || 55555}`)
     let entryResult = []
     if (typeof entry === 'string') {
-      entryResult = [entry, entryFileName]
+      entryResult = [entryFileName, entry]
     } else if (Array.isArray(entry)) {
-      entryResult = [...entry, entryFileName]
+      entryResult = [entryFileName, ...entry]
     }
 
     if (isReact) {
-      entryResult = ['react-hot-loader/patch', ...entryResult]
+      entryResult.unshift('react-hot-loader/patch')
     }
 
     return entryResult
@@ -56,7 +56,10 @@ class ServerWebpackPlugin {
       compiler.options.entry = {}
       if (typeof entryConfig === 'object') {
         Object.keys(entry).forEach(key => {
-          compiler.options.entry[key] = this.structureEntry(compiler.options.entry[key], serve.wsPort)
+          compiler.options.entry[key] = this.structureEntry(
+            compiler.options.entry[key],
+            serve.wsPort
+          )
         })
       }
     } else {
@@ -72,8 +75,10 @@ class ServerWebpackPlugin {
     const { plugins, mode, stats, devtool, watch, output, resolve } = this.webpackConfig
 
     compiler.options.mode = mode
+    compiler.options.performance = false
     compiler.options.devtool = devtool
     compiler.options.stats = stats
+    compiler.options.output.path = output.path
     compiler.options.output.filename = output.filename
     compiler.options.output.chunkFilename = output.chunkFilename
     compiler.options.watch = watch

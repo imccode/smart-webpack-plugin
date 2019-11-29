@@ -13,6 +13,8 @@
     "resolveJsonModule": true,
     "rootDir": "./src",
     "baseUrl": ".",
+    "declaration": true,
+    "declarationDir": "types",
     "outDir": "lib",
     "lib": ["es2018.promise", "dom", "scripthost"]
   },

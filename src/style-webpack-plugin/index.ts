@@ -1,5 +1,5 @@
 import path from 'path'
-import { StyleWebpackPluginOptions } from 'types'
+import { StyleWebpackPluginOptions } from 'index'
 import { Compiler, Configuration } from 'webpack'
 import { isVue, root } from '../config'
 import { NODE_ENV } from '../env'

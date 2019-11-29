@@ -1,5 +1,5 @@
-import queueLog from "./queueLog"
-import chalk = require("chalk")
+import queueLog from './queueLog'
+import chalk from 'chalk'
 
 /**
  * 返回当前node的环境信息

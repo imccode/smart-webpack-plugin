@@ -2,7 +2,7 @@ import { cosmiconfigSync } from 'cosmiconfig'
 import eslintFriendlyFormatterfrom from 'eslint-friendly-formatter'
 import queueLog from '../queueLog'
 import StylelintWebpackPlugin from 'stylelint-webpack-plugin'
-import { LintWebpackPluginOptions, SmartCosmiconfigResult } from 'types'
+import { LintWebpackPluginOptions, SmartCosmiconfigResult } from 'index'
 import { Configuration } from 'webpack'
 import { isReact, isTypescript, isVue, root } from '../config'
 import chalk = require('chalk')

@@ -123,6 +123,12 @@ declare namespace SmartWebpackPlugin {
      * 默认development环境启用
      */
     cacheDirectory?: string | boolean
+    /**
+     * 是否删除console
+     *
+     * 默认true
+     */
+    dropConsole?: boolean
   }
 
   /**
