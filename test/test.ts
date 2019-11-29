@@ -2,7 +2,7 @@ import webpack from 'webpack'
 
 // process.env.NODE_ENV = 'development'
 
-import { SmartWebpackPlugin } from '../lib'
+import SmartWebpackPlugin from '../src'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 
 const compiler = webpack(

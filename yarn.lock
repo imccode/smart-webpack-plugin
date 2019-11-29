@@ -7282,10 +7282,10 @@ slice-ansi@^2.1.0:
     astral-regex "^1.0.0"
     is-fullwidth-code-point "^2.0.0"
 
-smart-webpack-plugin@^0.0.2:
-  version "0.0.2"
-  resolved "https://npm.zhonganinfo.com/smart-webpack-plugin/-/smart-webpack-plugin-0.0.2.tgz#92bb0129d4e270119ca8b1807b534467707de372"
-  integrity sha1-krsBKdTicBGcqLGAe1NEZ3B943I=
+smart-webpack-plugin@0.0.3:
+  version "0.0.3"
+  resolved "https://npm.zhonganinfo.com/smart-webpack-plugin/-/smart-webpack-plugin-0.0.3.tgz#f9ba62822c7e54cf5e326f79942015fab1fd45e1"
+  integrity sha1-+bpigix+VM9eMm95lCAV+rH9ReE=
   dependencies:
     "@babel/plugin-proposal-class-properties" "^7.7.0"
     "@babel/plugin-proposal-decorators" "^7.7.0"

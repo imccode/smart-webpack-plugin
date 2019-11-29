@@ -62,9 +62,6 @@ export default (options: ScriptWebpackPluginOptions) => {
                  */
                 ...babelConfig
               }
-            },
-            {
-              loader: 'react-hot-loader/webpack'
             }
           ]
         }
