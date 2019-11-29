@@ -1,4 +1,4 @@
-import { ProgressWebpackPluginOptions } from 'index';
+import { ProgressWebpackPluginOptions } from '../types';
 import { Compiler, Configuration } from 'webpack';
 /**
  * 媒体资源webpack插件

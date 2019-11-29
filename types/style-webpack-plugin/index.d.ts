@@ -1,4 +1,4 @@
-import { StyleWebpackPluginOptions } from 'index';
+import { StyleWebpackPluginOptions } from '../types';
 import { Compiler, Configuration } from 'webpack';
 /**
  * 样式webpack插件

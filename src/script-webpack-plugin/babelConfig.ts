@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 import { cosmiconfigSync } from 'cosmiconfig'
-import { BabelConfiguration, SmartCosmiconfigResult } from 'index'
+import { BabelConfiguration, SmartCosmiconfigResult } from '../types'
 import { isReact, isTypescript } from '../config'
 import queueLog from '../queueLog'
 import { NODE_ENV } from '../env'

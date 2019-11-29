@@ -1,4 +1,4 @@
-import { AssetWebpackPluginOptions } from 'index'
+import { AssetWebpackPluginOptions } from '../types'
 import { Configuration } from 'webpack'
 
 export default (options: AssetWebpackPluginOptions) => {

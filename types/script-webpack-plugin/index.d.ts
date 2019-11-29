@@ -1,4 +1,4 @@
-import { ScriptWebpackPluginOptions } from 'index';
+import { ScriptWebpackPluginOptions } from '../types';
 import { Compiler, Configuration } from 'webpack';
 /**
  * 脚本webpack插件

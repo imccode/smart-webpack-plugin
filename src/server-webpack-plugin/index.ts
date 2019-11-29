@@ -1,4 +1,4 @@
-import { ServerWebpackPluginOptions } from 'index'
+import { ServerWebpackPluginOptions } from '../types'
 import { Compiler, Configuration, Entry, EntryFunc } from 'webpack'
 import { isReact } from '../config'
 import Serve from './serve'

@@ -1,4 +1,4 @@
-import { AssetWebpackPluginOptions, FrameworkState } from 'index';
+import { AssetWebpackPluginOptions, FrameworkState } from '../types';
 import { Compiler, Configuration } from 'webpack';
 /**
  * 媒体资源webpack插件

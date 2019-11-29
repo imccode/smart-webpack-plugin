@@ -1,4 +1,4 @@
-import { ServerWebpackPluginOptions, WSMessageType } from 'index';
+import { ServerWebpackPluginOptions, WSMessageType } from '../types';
 import { Compiler } from 'webpack';
 declare class Serve {
     private options;

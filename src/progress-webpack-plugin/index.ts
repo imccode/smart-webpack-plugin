@@ -1,4 +1,4 @@
-import { ProgressWebpackPluginOptions } from 'index'
+import { ProgressWebpackPluginOptions } from '../types'
 import { Compiler, Configuration } from 'webpack'
 import webpackConfig from './webpackConfig'
 

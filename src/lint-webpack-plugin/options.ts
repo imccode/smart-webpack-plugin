@@ -1,4 +1,4 @@
-import { LintWebpackPluginOptions } from 'index'
+import { LintWebpackPluginOptions } from '../types'
 
 const options: LintWebpackPluginOptions = {
   fix: true,

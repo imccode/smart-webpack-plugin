@@ -1,3 +1,3 @@
-import { PostcssConfiguration } from 'index';
+import { PostcssConfiguration } from '../types';
 declare let config: PostcssConfiguration;
 export default config;

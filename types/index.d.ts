@@ -1,4 +1,4 @@
-import { SmartWebpackPluginOptions } from 'index';
+import { SmartWebpackPluginOptions } from './types';
 import { Compiler, Configuration } from 'webpack';
 import AssetWebpackPlugin from './asset-webpack-plugin';
 import LintWebpackPlugin from './lint-webpack-plugin';

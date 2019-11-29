@@ -1,6 +1,6 @@
 import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin'
 import path from 'path'
-import { ServerWebpackPluginOptions } from 'index'
+import { ServerWebpackPluginOptions } from '../types'
 import { Configuration, HotModuleReplacementPlugin } from 'webpack'
 import { isReact, root } from '../config'
 import { localIps } from '../utils'

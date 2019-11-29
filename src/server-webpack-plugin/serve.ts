@@ -2,7 +2,7 @@ import Koa from 'koa'
 import koaStatic from 'koa-static'
 import koaCompress from 'koa-compress'
 import formatError from './formatErrors'
-import { ServerWebpackPluginOptions, WSMessageType } from 'index'
+import { ServerWebpackPluginOptions, WSMessageType } from '../types'
 import { Compiler } from 'webpack'
 import WebSocket from 'ws'
 

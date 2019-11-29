@@ -1,4 +1,4 @@
-import { ServerWebpackPluginOptions } from 'index';
+import { ServerWebpackPluginOptions } from '../types';
 import { Compiler, Configuration, Entry, EntryFunc } from 'webpack';
 /**
  * server webpack插件

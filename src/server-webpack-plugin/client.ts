@@ -1,4 +1,4 @@
-import { WSMessageType } from 'index'
+import { WSMessageType } from '../types'
 import querystring from 'querystring'
 
 interface Options {

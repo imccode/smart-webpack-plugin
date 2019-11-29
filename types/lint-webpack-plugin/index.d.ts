@@ -1,4 +1,4 @@
-import { LintWebpackPluginOptions } from 'index';
+import { LintWebpackPluginOptions } from '../types';
 import { Compiler, Configuration } from 'webpack';
 /**
  * 代码校验webpack插件

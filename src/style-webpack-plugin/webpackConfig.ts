@@ -1,7 +1,7 @@
 import CompressionWebpackPlugin from 'compression-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin'
-import { StyleWebpackPluginOptions } from 'index'
+import { StyleWebpackPluginOptions } from '../types'
 import { Configuration, RuleSetUse, RuleSetUseItem } from 'webpack'
 import { isVue } from '../config'
 import { NODE_ENV } from '../env'
