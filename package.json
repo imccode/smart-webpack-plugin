@@ -1,6 +1,6 @@
 {
   "name": "smart-webpack-plugin",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "一个智能匹配项目需要的webpack配置的插件",
   "main": "lib/index.js",
   "module": "src/index.ts",
@@ -107,6 +107,7 @@
     "@types/ws": "^6.0.3",
     "node-sass": "^4.13.0",
     "prettier": "1.19.1",
+    "smart-webpack-plugin": "^0.0.2",
     "ts-node-dev": "^1.0.0-pre.43",
     "typescript": "^3.7.2",
     "vue-loader": "^15.7.2",
