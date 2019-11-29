@@ -1,21 +1,41 @@
 {
   "name": "smart-webpack-plugin",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "一个智能匹配项目需要的webpack配置的插件",
   "main": "lib/index.js",
-  "types": "types/index.d.ts",
+  "module": "src/index.ts",
+  "typings": "types/index.d.ts",
   "author": "ccode",
   "files": [
+    "LICENSE",
     "README.md",
     "index.d.ts",
     "src/",
     "lib/",
     "types"
   ],
+  "keywords": [
+    "asset-webpack-plugin",
+    "lint-webpack-plugin",
+    "progress-webpack-plugin",
+    "script-webpack-plugin",
+    "server-webpack-plugin",
+    "style-webpack-plugin",
+    "webpack",
+    "webpack-plugin"
+  ],
   "license": "MIT",
   "engines": {
     "node": ">=10.0.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/imccode/smart-webpack-plugin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/imccode/smart-webpack-plugin/issues"
+  },
+  "homepage": "https://github.com/imccode/smart-webpack-plugin",
   "scripts": {
     "test": "ts-node ./test/test"
   },
