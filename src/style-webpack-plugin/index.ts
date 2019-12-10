@@ -1,8 +1,7 @@
 import path from 'path'
-import { StyleWebpackPluginOptions } from '../types'
 import { Compiler, Configuration } from 'webpack'
 import { isVue, root } from '../config'
-import { NODE_ENV } from '../env'
+import { StyleWebpackPluginOptions } from '../types'
 import webpackConfig from './webpackConfig'
 
 /**
@@ -10,7 +9,7 @@ import webpackConfig from './webpackConfig'
  */
 class StyleWebpackPlugin {
   options: StyleWebpackPluginOptions = {
-    cacheDirectory: NODE_ENV === 'development' ? path.resolve(root, '.cache', 'style') : false
+    cacheDirectory: path.resolve(root, '.cache', 'style')
   }
 
   webpackConfig: Configuration = {}
@@ -24,7 +23,6 @@ class StyleWebpackPlugin {
         ...(options.cssLoader || {})
       }
     }
-    this.webpackConfig = webpackConfig(this.options)
   }
 
   /**
@@ -48,6 +46,11 @@ class StyleWebpackPlugin {
    * @param compiler
    */
   apply(compiler: Compiler) {
+    this.options.cacheDirectory =
+      compiler.options.mode === 'production' ? false : this.options.cacheDirectory
+
+    this.webpackConfig = webpackConfig(this.options, compiler)
+
     this.inject(compiler)
     if (isVue) {
       this.injectRules(compiler)

@@ -1,9 +1,12 @@
+import chalk from 'chalk'
+import path from 'path'
+import { Compiler, Configuration } from 'webpack'
+import log from '../log'
 import { ServerWebpackPluginOptions } from '../types'
-import { Compiler, Configuration, Entry, EntryFunc } from 'webpack'
-import { isReact } from '../config'
+import { structureEntry } from '../utils'
+import WsServe from './hot/wsServe'
 import Serve from './serve'
 import webpackConfig from './webpackConfig'
-import path from 'path'
 
 /**
  * server webpack插件
@@ -11,7 +14,8 @@ import path from 'path'
 class ServerWebpackPlugin {
   options: ServerWebpackPluginOptions = {
     port: 8080,
-    compress: false
+    compress: false,
+    hot: true
   }
 
   webpackConfig: Configuration = webpackConfig(this.options)
@@ -21,50 +25,16 @@ class ServerWebpackPlugin {
   }
 
   /**
-   * 构造一个新的entry
-   */
-  structureEntry(entry: string | string[] | Entry | EntryFunc, wsPort: number) {
-    const entryFileName = path.resolve(__dirname, `./client?wsPort=${wsPort || 55555}`)
-    let entryResult = []
-    if (typeof entry === 'string') {
-      entryResult = [entryFileName, entry]
-    } else if (Array.isArray(entry)) {
-      entryResult = [entryFileName, ...entry]
-    }
-
-    if (isReact) {
-      entryResult.unshift('react-hot-loader/patch')
-    }
-
-    return entryResult
-  }
-
-  /**
    * 注入默认热更新服务
    * @param compiler
    */
   injectHotServer(compiler: Compiler) {
     const { entry } = compiler.options
 
-    const serve = new Serve(this.options, compiler)
-    if (typeof entry === 'object') {
-      Object.keys(entry).forEach(key => {
-        compiler.options.entry[key] = this.structureEntry(compiler.options.entry[key], serve.wsPort)
-      })
-    } else if (typeof entry === 'function') {
-      const entryConfig = entry()
-      compiler.options.entry = {}
-      if (typeof entryConfig === 'object') {
-        Object.keys(entry).forEach(key => {
-          compiler.options.entry[key] = this.structureEntry(
-            compiler.options.entry[key],
-            serve.wsPort
-          )
-        })
-      }
-    } else {
-      compiler.options.entry = this.structureEntry(compiler.options.entry, serve.wsPort)
-    }
+    const serve = new WsServe(this.options, compiler)
+    const entryFileName = path.resolve(__dirname, `./hot/client?wsPort=${serve.wsPort || 55555}`)
+
+    compiler.options.entry = structureEntry(entry, entryFileName)
   }
 
   /**
@@ -72,12 +42,9 @@ class ServerWebpackPlugin {
    * @param compiler
    */
   inject(compiler: Compiler) {
-    const { plugins, mode, stats, devtool, watch, output, resolve } = this.webpackConfig
+    const { plugins, devtool, watch, output, resolve } = this.webpackConfig
 
-    compiler.options.mode = mode
-    compiler.options.performance = false
     compiler.options.devtool = devtool
-    compiler.options.stats = stats
     compiler.options.output.path = output.path
     compiler.options.output.filename = output.filename
     compiler.options.output.chunkFilename = output.chunkFilename
@@ -95,7 +62,11 @@ class ServerWebpackPlugin {
    */
   apply(compiler: Compiler) {
     this.inject(compiler)
-    this.injectHotServer(compiler)
+    new Serve(this.options, compiler)
+    if (this.options.hot) {
+      log.info(`已开启${chalk.green('Hot')}代码热更新`)
+      this.injectHotServer(compiler)
+    }
   }
 }
 

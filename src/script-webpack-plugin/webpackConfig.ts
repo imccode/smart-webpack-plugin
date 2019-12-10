@@ -1,23 +1,20 @@
+import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin'
 import chalk from 'chalk'
 import CompressionWebpackPlugin from 'compression-webpack-plugin'
 import TerserWebpackPlugin from 'terser-webpack-plugin'
-import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin'
-import { ScriptWebpackPluginOptions } from '../types'
 import VueLoaderPlugin from 'vue-loader/lib/plugin'
-import { Configuration } from 'webpack'
+import MessageWebpackPlugin from '../message-webpack-plugin'
+import { Compiler, Configuration } from 'webpack'
 import { isReact, isTypescript, isVue, root } from '../config'
-import { NODE_ENV } from '../env'
-import queueLog from '../queueLog'
+import log from '../log'
+import { ScriptWebpackPluginOptions } from '../types'
 import babelConfig from './babelConfig'
 
-export default (options: ScriptWebpackPluginOptions) => {
-  let regExpStr = isTypescript ? '.(t|j)s' : '.js'
-
-  if (isReact) {
-    regExpStr += 'x?'
-  }
-
+export default (options: ScriptWebpackPluginOptions, compiler: Compiler) => {
   const config: Configuration = {
+    stats: {
+      all: false
+    },
     /**
      * 导出配置
      */
@@ -38,7 +35,7 @@ export default (options: ScriptWebpackPluginOptions) => {
     module: {
       rules: [
         {
-          test: new RegExp(`${regExpStr}$`),
+          test: /\.(j|t)sx?$/,
           exclude: /(node_modules|bower_components)/,
           use: [
             {
@@ -60,7 +57,7 @@ export default (options: ScriptWebpackPluginOptions) => {
                 /**
                  * babel 配置
                  */
-                ...babelConfig
+                ...babelConfig(options, compiler)
               }
             }
           ]
@@ -75,6 +72,7 @@ export default (options: ScriptWebpackPluginOptions) => {
        * 强制所有必需模块的整个路径与磁盘上实际路径的确切情况相匹配
        */
       new CaseSensitivePathsPlugin()
+      // new ReactRefreshPlugin()
     ],
     optimization: {
       /**
@@ -194,6 +192,10 @@ export default (options: ScriptWebpackPluginOptions) => {
     }
   }
 
+  if (compiler.options.mode === 'production') {
+    config.plugins.push(new MessageWebpackPlugin())
+  }
+
   if (isTypescript) {
     config.resolve.extensions.push('.ts')
   }
@@ -202,7 +204,7 @@ export default (options: ScriptWebpackPluginOptions) => {
    * 支持vue
    */
   if (isVue) {
-    queueLog.info(`以使用${chalk.green('Vue')}框架专属配置`)
+    log.info(`以使用${chalk.green('Vue')}框架专属配置`)
     config.plugins.push(new VueLoaderPlugin())
     config.resolve.extensions.push('.vue')
   }

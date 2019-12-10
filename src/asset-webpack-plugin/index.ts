@@ -7,14 +7,12 @@ import webpackConfig from './webpackConfig'
  */
 class AssetWebpackPlugin {
   options: AssetWebpackPluginOptions = {
-    enable: true
+    esModule: false
   }
 
   webpackConfig: Configuration = {}
 
-  private framework: FrameworkState
-  
-  constructor(options: AssetWebpackPluginOptions = {}, framework: FrameworkState = {}) {
+  constructor(options: AssetWebpackPluginOptions = {}) {
     this.options = { ...this.options, ...options }
     this.webpackConfig = webpackConfig(this.options)
   }

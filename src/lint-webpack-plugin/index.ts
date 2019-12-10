@@ -1,13 +1,20 @@
 import { LintWebpackPluginOptions } from '../types'
 import { Compiler, Configuration } from 'webpack'
-import lintOptions from './options'
 import webpackConfig from './webpackConfig'
 
 /**
  * 代码校验webpack插件
  */
 class LintWebpackPlugin {
-  options: LintWebpackPluginOptions = lintOptions
+  options: LintWebpackPluginOptions = {
+    fix: true,
+    eslint: {
+      fix: true
+    },
+    stylelint: {
+      fix: true
+    }
+  }
 
   webpackConfig: Configuration = {}
 

@@ -123,6 +123,10 @@ declare namespace SmartWebpackPlugin {
          * 默认true
          */
         dropConsole?: boolean;
+        /**
+         * 是否开启hot代码热更新
+         */
+        hot?: boolean;
     }
     /**
      * style-webpack-plugin 样式资源 插件的可配参数
@@ -152,6 +156,10 @@ declare namespace SmartWebpackPlugin {
      * asset-webpack-plugin 媒体资源 插件的可配参数
      */
     interface AssetWebpackPluginOptions {
+        /**
+         * 是否启用es模块
+         */
+        esModule?: boolean;
     }
     /**
      * lint-webpack-plugin 代码校验 插件的可配参数
@@ -207,5 +215,26 @@ declare namespace SmartWebpackPlugin {
          * 是否开启压缩，主要返回gzip文件
          */
         compress?: boolean;
+        /**
+         * 是否开启hot代码热更新
+         */
+        hot?: boolean;
+    }
+    /**
+     * message-webpack-plugin webpack消息插件
+     */
+    interface MessageWebpackPluginOptions {
+        /**
+         * 编译完成回调
+         */
+        success?(): void;
+        /**
+         * 编译失败回调
+         */
+        errors?(errors: any[]): void;
+        /**
+         * 编译警告回调
+         */
+        warnings?(warnings: any[]): void;
     }
 }

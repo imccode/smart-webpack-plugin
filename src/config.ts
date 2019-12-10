@@ -14,14 +14,14 @@ const packageConfig = require(path.resolve(root, 'package.json'))
 /**
  * 是否使用了vue框架
  */
-const isVue: boolean =
+const isVue: string | undefined =
   (packageConfig.dependencies && packageConfig.dependencies.vue) ||
   (packageConfig.devDependencies && packageConfig.devDependencies.vue)
 
 /**
  * 是否使用了react框架
  */
-const isReact: boolean =
+const isReact: string | undefined =
   (packageConfig.dependencies && packageConfig.dependencies.react) ||
   (packageConfig.devDependencies && packageConfig.devDependencies.react)
 

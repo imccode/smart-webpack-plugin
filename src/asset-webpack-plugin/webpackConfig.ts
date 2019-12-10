@@ -16,7 +16,8 @@ export default (options: AssetWebpackPluginOptions) => {
               options: {
                 limit: 500,
                 prefix: 'img',
-                name: 'img/[name].[hash:8].[ext]'
+                name: 'img/[name].[hash:8].[ext]',
+                esModule: options.esModule
               }
             }
           ]
@@ -32,7 +33,8 @@ export default (options: AssetWebpackPluginOptions) => {
               options: {
                 limit: 1e4,
                 prefix: 'fonts',
-                name: 'fonts/[name].[hash:8].[ext]'
+                name: 'fonts/[name].[hash:8].[ext]',
+                esModule: options.esModule
               }
             }
           ]
@@ -47,7 +49,8 @@ export default (options: AssetWebpackPluginOptions) => {
               loader: 'url-loader',
               options: {
                 limit: 1e4,
-                name: 'media/[name].[hash:8].[ext]'
+                name: 'media/[name].[hash:8].[ext]',
+                esModule: options.esModule
               }
             }
           ]

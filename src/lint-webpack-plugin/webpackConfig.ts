@@ -1,6 +1,6 @@
 import { cosmiconfigSync } from 'cosmiconfig'
-import eslintFriendlyFormatterfrom from 'eslint-friendly-formatter'
-import queueLog from '../queueLog'
+import eslintFormat from './format'
+import log from '../log'
 import StylelintWebpackPlugin from 'stylelint-webpack-plugin'
 import { LintWebpackPluginOptions, SmartCosmiconfigResult } from '../types'
 import { Configuration } from 'webpack'
@@ -38,7 +38,7 @@ export default (options: LintWebpackPluginOptions) => {
       ]
     }).search()
     if (userEslintConfig) {
-      queueLog.info(`已找到用户的${chalk.green('Eslint')}配置，并开启脚本代码校验`)
+      log.info(`已找到用户的${chalk.green('Eslint')}配置，并开启脚本代码校验`)
       /**
        * eslinter校验代码
        */
@@ -56,19 +56,19 @@ export default (options: LintWebpackPluginOptions) => {
                */
               useEslintrc: true,
               /**
-               * 校验不通过，抛出错误提示
+               * webpack抛出错误，不提示eslint提示
                */
-              failOnError: true,
+              failOnError: false,
               /**
-               * 校验前就行工具格式化
+               * 格式化显示输出
                */
-              formatter: eslintFriendlyFormatterfrom
+              // formatter: eslintFormat
             }
           }
         ]
       })
     } else {
-      queueLog.warn(`未找到用户的${chalk.green('Eslint')}配置，不开启脚本代码校验`)
+      log.warn(`未找到用户的${chalk.green('Eslint')}配置，不开启脚本代码校验`)
     }
   }
 
@@ -78,7 +78,7 @@ export default (options: LintWebpackPluginOptions) => {
      */
     const userStylelintConfig: SmartCosmiconfigResult<{}> = cosmiconfigSync('stylelint').search()
     if (userStylelintConfig) {
-      queueLog.info(`已找到用户的${chalk.green('Stylelint')}配置，并开启样式代码校验`)
+      log.info(`已找到用户的${chalk.green('Stylelint')}配置，并开启样式代码校验`)
       config.plugins.push(
         /**
          * 处理stylelint样式校验
@@ -89,7 +89,7 @@ export default (options: LintWebpackPluginOptions) => {
         })
       )
     } else {
-      queueLog.warn(`未找到用户的${chalk.green('Stylelint')}配置，不开启样式代码校验`)
+      log.warn(`未找到用户的${chalk.green('Stylelint')}配置，不开启样式代码校验`)
     }
   }
 

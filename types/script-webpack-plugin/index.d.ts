@@ -1,5 +1,5 @@
-import { ScriptWebpackPluginOptions } from '../types';
 import { Compiler, Configuration } from 'webpack';
+import { ScriptWebpackPluginOptions } from '../types';
 /**
  * 脚本webpack插件
  */
@@ -17,6 +17,11 @@ declare class ScriptWebpackPlugin {
      * @param compiler
      */
     inject(compiler: Compiler): void;
+    /**
+     * 注入热更新代码
+     * @param compiler
+     */
+    injectHot(compiler: Compiler): void;
     /**
      * 执行插件
      * @param compiler

@@ -1,24 +1,26 @@
 import path from 'path'
-import { ScriptWebpackPluginOptions } from '../types'
 import { Compiler, Configuration } from 'webpack'
 import { isVue, root } from '../config'
-import { NODE_ENV } from '../env'
+import { ScriptWebpackPluginOptions } from '../types'
+import { includesEntry } from '../utils'
 import webpackConfig from './webpackConfig'
+
+const pluginName = 'ScriptWebpackPlugin'
 
 /**
  * 脚本webpack插件
  */
 class ScriptWebpackPlugin {
   options: ScriptWebpackPluginOptions = {
-    cacheDirectory: NODE_ENV === 'development' ? path.resolve(root, '.cache', 'script') : false,
-    dropConsole: true
+    cacheDirectory: path.resolve(root, '.cache', 'script'),
+    dropConsole: true,
+    hot: true
   }
 
   webpackConfig: Configuration = {}
 
   constructor(options: ScriptWebpackPluginOptions = {}) {
     this.options = { ...this.options, ...options }
-    this.webpackConfig = webpackConfig(this.options)
   }
 
   /**
@@ -29,7 +31,10 @@ class ScriptWebpackPlugin {
     if (isVue) {
       compiler.options.module.rules.push({
         test: /\.vue$/,
-        loader: 'vue-loader'
+        loader: 'vue-loader',
+        options: {
+          hotReload: this.options.hot
+        }
       })
     }
   }
@@ -39,8 +44,10 @@ class ScriptWebpackPlugin {
    * @param compiler
    */
   inject(compiler: Compiler) {
-    const { plugins, output, resolve, optimization } = this.webpackConfig
+    const { plugins, output, resolve, optimization, performance, stats } = this.webpackConfig
     this.injectVue(compiler)
+    compiler.options.performance = performance
+    compiler.options.stats = stats
     compiler.options.output.filename = output.filename
     compiler.options.output.chunkFilename = output.chunkFilename
     compiler.options.resolve.extensions = Array.from(
@@ -48,7 +55,7 @@ class ScriptWebpackPlugin {
     )
     compiler.options.plugins.push(...plugins)
 
-    if (NODE_ENV === 'production') {
+    if (compiler.options.mode === 'production') {
       compiler.options.optimization = {
         ...compiler.options.optimization,
         ...optimization,
@@ -61,12 +68,38 @@ class ScriptWebpackPlugin {
   }
 
   /**
+   * 注入热更新代码
+   * @param compiler
+   */
+  injectHot(compiler: Compiler) {
+    compiler.hooks.normalModuleFactory.tap(pluginName, normalModuleFactory => {
+      normalModuleFactory.hooks.afterResolve.tap(pluginName, data => {
+        if (
+          !/node_modules/.test(data.resource) &&
+          !data.rawRequest.includes('hot/client?wsPort') &&
+          includesEntry(compiler.options.entry, data.rawRequest)
+        ) {
+          data.loaders.unshift({
+            loader: path.resolve(__dirname, './reactRefreshLoader')
+          })
+        }
+        return data
+      })
+    })
+  }
+
+  /**
    * 执行插件
    * @param compiler
    */
   apply(compiler: Compiler) {
+    this.options.cacheDirectory =
+      compiler.options.mode === 'production' ? false : this.options.cacheDirectory
+    this.webpackConfig = webpackConfig(this.options, compiler)
+
     this.inject(compiler)
-    compiler.hooks.afterEnvironment.tap('ScriptWebpackPlugin', () => {
+    if (this.options.hot) this.injectHot(compiler)
+    compiler.hooks.afterEnvironment.tap(pluginName, () => {
       compiler.options.module.rules.push(...this.webpackConfig.module.rules)
     })
   }

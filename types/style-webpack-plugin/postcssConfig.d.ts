@@ -1,3 +1,3 @@
 import { PostcssConfiguration } from '../types';
-declare let config: PostcssConfiguration;
-export default config;
+declare const _default: () => PostcssConfiguration;
+export default _default;

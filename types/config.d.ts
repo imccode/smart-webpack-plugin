@@ -9,11 +9,11 @@ declare const packageConfig: any;
 /**
  * 是否使用了vue框架
  */
-declare const isVue: boolean;
+declare const isVue: string | undefined;
 /**
  * 是否使用了react框架
  */
-declare const isReact: boolean;
+declare const isReact: string | undefined;
 /**
  * 是否使用typescript语言
  */

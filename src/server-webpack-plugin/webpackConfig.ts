@@ -1,18 +1,12 @@
-import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin'
 import path from 'path'
-import { ServerWebpackPluginOptions } from '../types'
 import { Configuration, HotModuleReplacementPlugin } from 'webpack'
-import { isReact, root } from '../config'
+import { root } from '../config'
+import MessageWebpackPlugin from '../message-webpack-plugin'
+import { ServerWebpackPluginOptions } from '../types'
 import { localIps } from '../utils'
 
 export default (options: ServerWebpackPluginOptions) => {
   const config: Configuration = {
-    stats: false,
-    performance: false,
-    /**
-     * 表示当前webpack环境为开发环境
-     */
-    mode: 'development',
     /**
      * 浏览器debug sourceMap 模式
      */
@@ -34,7 +28,7 @@ export default (options: ServerWebpackPluginOptions) => {
     },
     resolve: {
       alias: {
-        'vue$': 'vue/dist/vue.esm.js'
+        vue$: 'vue/dist/vue.esm.js'
       }
     },
     /**
@@ -44,20 +38,20 @@ export default (options: ServerWebpackPluginOptions) => {
     plugins: [
       new HotModuleReplacementPlugin(),
       /**
-       * 只显示核心错误
+       * 打印Webpack消息
        */
-      new FriendlyErrorsWebpackPlugin({
-        compilationSuccessInfo: {
-          messages: localIps().map(ip => {
-            return `listening: http://${ip}:${options.port}`
-          })
+      new MessageWebpackPlugin({
+        success() {
+          console.log('\n在浏览器打开以下地址浏览.\n')
+          console.log(`  本地地址：http://localhost:${options.port}`)
+          localIps()
+            .map(ip => `  网络地址: http://${ip}:${options.port}`)
+            .forEach(msg => {
+              console.log(msg)
+            })
         }
       })
     ]
-  }
-
-  if (isReact) {
-    config.resolve.alias['react-dom'] = '@hot-loader/react-dom'
   }
 
   return config

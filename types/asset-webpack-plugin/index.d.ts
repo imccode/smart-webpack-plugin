@@ -1,4 +1,4 @@
-import { AssetWebpackPluginOptions, FrameworkState } from '../types';
+import { AssetWebpackPluginOptions } from '../types';
 import { Compiler, Configuration } from 'webpack';
 /**
  * 媒体资源webpack插件
@@ -6,8 +6,7 @@ import { Compiler, Configuration } from 'webpack';
 declare class AssetWebpackPlugin {
     options: AssetWebpackPluginOptions;
     webpackConfig: Configuration;
-    private framework;
-    constructor(options?: AssetWebpackPluginOptions, framework?: FrameworkState);
+    constructor(options?: AssetWebpackPluginOptions);
     /**
      * 执行插件
      * @param compiler

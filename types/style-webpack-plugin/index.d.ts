@@ -1,5 +1,5 @@
-import { StyleWebpackPluginOptions } from '../types';
 import { Compiler, Configuration } from 'webpack';
+import { StyleWebpackPluginOptions } from '../types';
 /**
  * 样式webpack插件
  */

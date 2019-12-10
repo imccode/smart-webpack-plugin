@@ -1,10 +1,13 @@
 import React from 'react'
-
 import './style.scss'
 
-class App extends React.Component {
+type State = {
+  text: number
+}
+
+class App extends React.Component<{}, State> {
   state = {
-    text: 12
+    text: 1
   }
 
   handleClick = () => {
@@ -17,7 +20,7 @@ class App extends React.Component {
     return (
       <div>
         {this.state.text}
-        <button onClick={this.handleClick}>+133</button>
+        <button onClick={this.handleClick}>+1</button>
       </div>
     )
   }

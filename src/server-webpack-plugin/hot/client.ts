@@ -1,4 +1,4 @@
-import { WSMessageType } from '../types'
+import { WSMessageType } from '../../types'
 import querystring from 'querystring'
 
 interface Options {
@@ -69,10 +69,7 @@ const hotUpdate = async (time: number) => {
         await hot.apply({
           ignoreUnaccepted: true,
           ignoreDeclined: true,
-          ignoreErrored: true,
-          onErrored(data) {
-            console.error('发生错误:\n', new Error(data))
-          }
+          ignoreErrored: true
         })
 
         log('检测到代码更变，编译完成，局部页面已更新！用时：' + (time / 1000).toFixed(2) + 's')

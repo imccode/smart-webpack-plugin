@@ -2,15 +2,15 @@
   <div>
     <div class="aa">{{ text }}</div>
     <img src="./52232719.jpeg" alt="">
-    <button @click="handleClick">+11</button>
+    <button @click="handleClick">+1</button>
   </div>
 </template>
 
-<script lang="ts">
+<script>
 export default {
   data() {
     return {
-      text: 123
+      text: 1234
     }
   },
   methods: {

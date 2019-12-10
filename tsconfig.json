@@ -12,11 +12,14 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "rootDir": "./src",
-    "baseUrl": ".",
+    "baseUrl": "./",
     "declaration": true,
     "declarationDir": "types",
     "outDir": "lib",
-    "lib": ["es2018.promise", "dom", "scripthost"]
+    "lib": ["es2018.promise", "dom", "scripthost"],
+    "paths": {
+      "src/*": ["./src/*"]
+    }
   },
   "exclude": ["node_modules", "test"]
 }

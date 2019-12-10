@@ -1,3 +1,4 @@
-import { BabelConfiguration } from '../types';
-declare let config: BabelConfiguration;
-export default config;
+import { Compiler } from 'webpack';
+import { BabelConfiguration, ScriptWebpackPluginOptions } from '../types';
+declare const _default: (options: ScriptWebpackPluginOptions, compiler: Compiler) => BabelConfiguration;
+export default _default;

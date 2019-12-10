@@ -2,19 +2,20 @@ import CompressionWebpackPlugin from 'compression-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin'
 import { StyleWebpackPluginOptions } from '../types'
-import { Configuration, RuleSetUse, RuleSetUseItem } from 'webpack'
+import { Configuration, RuleSetUse, RuleSetUseItem, Compiler } from 'webpack'
 import { isVue } from '../config'
-import { NODE_ENV } from '../env'
 import postcssConfig from './postcssConfig'
 
-export default (options: StyleWebpackPluginOptions) => {
+export default (options: StyleWebpackPluginOptions, compiler: Compiler) => {
+  const { mode } = compiler.options
+
   /**
    * 提取样式到单个css文件
    */
   const miniCssExtractConf: RuleSetUseItem = {
     loader: MiniCssExtractPlugin.loader,
     options: {
-      hmr: NODE_ENV === 'development',
+      hmr: false,
       reloadAll: true
     }
   }
@@ -34,7 +35,7 @@ export default (options: StyleWebpackPluginOptions) => {
      *
      * 生成css样式为html行内样式
      */
-    NODE_ENV === 'development' ? { loader: styleLoaderName } : miniCssExtractConf,
+    mode === 'development' ? { loader: styleLoaderName } : miniCssExtractConf,
     /**
      * 处理其他预编译样式生成的css
      */
@@ -46,14 +47,14 @@ export default (options: StyleWebpackPluginOptions) => {
      */
     {
       loader: 'postcss-loader',
-      options: postcssConfig
+      options: postcssConfig()
     }
   ]
 
   /**
    * 启用缓存
    */
-  if (NODE_ENV === 'development' && options.cacheDirectory) {
+  if (mode === 'development' && options.cacheDirectory) {
     commonLoaders.unshift({
       loader: 'cache-loader',
       options: {
@@ -84,7 +85,7 @@ export default (options: StyleWebpackPluginOptions) => {
   /**
    * 生产模式
    */
-  if (NODE_ENV === 'production') {
+  if (mode === 'production') {
     config.plugins.push(
       ...[
         /**
