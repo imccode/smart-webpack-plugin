@@ -1,9 +1,7 @@
 import path from 'path'
 import { Configuration, HotModuleReplacementPlugin } from 'webpack'
 import { root } from '../config'
-import MessageWebpackPlugin from '../message-webpack-plugin'
 import { ServerWebpackPluginOptions } from '../types'
-import { localIps } from '../utils'
 
 export default (options: ServerWebpackPluginOptions) => {
   const config: Configuration = {
@@ -36,21 +34,7 @@ export default (options: ServerWebpackPluginOptions) => {
      */
     watch: true,
     plugins: [
-      new HotModuleReplacementPlugin(),
-      /**
-       * 打印Webpack消息
-       */
-      new MessageWebpackPlugin({
-        success() {
-          console.log('\n在浏览器打开以下地址浏览.\n')
-          console.log(`  本地地址：http://localhost:${options.port}`)
-          localIps()
-            .map(ip => `  网络地址: http://${ip}:${options.port}`)
-            .forEach(msg => {
-              console.log(msg)
-            })
-        }
-      })
+      new HotModuleReplacementPlugin()
     ]
   }
 

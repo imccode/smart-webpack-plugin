@@ -13,7 +13,7 @@ import webpackConfig from './webpackConfig'
  */
 class ServerWebpackPlugin {
   options: ServerWebpackPluginOptions = {
-    port: 8080,
+    port: 33333,
     compress: false,
     hot: true
   }

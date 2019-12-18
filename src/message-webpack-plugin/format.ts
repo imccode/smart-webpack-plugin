@@ -4,7 +4,8 @@ import { Stats } from 'webpack'
 const friendlySyntaxErrorLabel = 'Syntax error:'
 const friendlyParsingErrorLabel = 'Parsing error:'
 
-const hasError = (message: string) => message.includes(friendlySyntaxErrorLabel) || message.includes(friendlyParsingErrorLabel)
+const hasError = (message: string) =>
+  message.includes(friendlySyntaxErrorLabel) || message.includes(friendlyParsingErrorLabel)
 
 const lineErrorString = (label: string, message: string, line: string, columm: string) =>
   `${chalk.bold(`Line ${line}:${columm}`)} ${label} ${message.trim()}`
@@ -17,6 +18,7 @@ const formatMessage = (message: string): string => {
     if (/Module [A-z ]+\(from/.test(line)) return false
     if (/^\s*at\s((?!webpack:).)*:\d+:\d+[\s)]*(\n|$)/gm.test(line)) return false
     if (/^\s*at\s<anonymous>(\n|$)/gm.test(line)) return false
+    if (line.includes('Module failed because of a eslint error')) return false
     return true
   })
 
@@ -24,16 +26,9 @@ const formatMessage = (message: string): string => {
     if (line.indexOf('Thread Loader') === 0) return ''
 
     if (line === 'SyntaxError') return ''
-
-    // Line (12:2) Parsing error: a -> b
-    let parsingError = /Line (\d+):(?:(\d+):)?\s*Parsing error: (.+)$/.exec(line)
-    if (parsingError) {
-      const [, errorLine, errorColumn, errorMessage] = parsingError
-      return lineErrorString(friendlyParsingErrorLabel, errorMessage, errorLine, errorColumn)
-    }
-
+    
     // SyntaxError: ./App.js: Unexpected token, expected "{" (5:14)"
-    parsingError = /(SyntaxError: )*\S+:(( \S+)*) \((\d+):(\d+)\)/.exec(line)
+    let parsingError = /(SyntaxError: )*\S+:(( \S+)*) \((\d+):(\d+)\)/.exec(line)
     if (parsingError) {
       const [, , errorMessage, , errorLine, errorColumn] = parsingError
       return lineErrorString(friendlySyntaxErrorLabel, errorMessage, errorLine, errorColumn)
@@ -89,7 +84,7 @@ const formatMessage = (message: string): string => {
     lines[1] += 'Run `npm install node-sass` or `yarn add node-sass` inside your workspace.'
   }
 
-  lines[0] = chalk.cyan(lines[0] + '\n')
+  lines[0] = chalk.cyan(lines[0])
 
   message = lines.join('\n')
 

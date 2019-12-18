@@ -55,14 +55,11 @@ export default (options: LintWebpackPluginOptions) => {
                * 允许在用户项目根目录查找Eslit配置文件
                */
               useEslintrc: true,
-              /**
-               * webpack抛出错误，不提示eslint提示
-               */
-              failOnError: false,
+              failOnError: true,
               /**
                * 格式化显示输出
                */
-              // formatter: eslintFormat
+              formatter: eslintFormat
             }
           }
         ]

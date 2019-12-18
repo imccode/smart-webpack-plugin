@@ -1,3 +1,5 @@
+import { AssetWebpackPluginOptions } from 'asset-webpack-plugin'
+
 export = SmartWebpackPlugin
 
 declare namespace SmartWebpackPlugin {
@@ -111,6 +113,10 @@ declare namespace SmartWebpackPlugin {
      * server-webpack-plugin 本地开发环境 插件的可配参数
      */
     server?: false | ServerWebpackPluginOptions
+    /**
+     * message-webpack-plugin webpack消息插件
+     */
+    message?: false | MessageWebpackPluginOptions
   }
 
   /**
@@ -161,16 +167,6 @@ declare namespace SmartWebpackPlugin {
            */
           [key: string]: any
         }
-  }
-
-  /**
-   * asset-webpack-plugin 媒体资源 插件的可配参数
-   */
-  interface AssetWebpackPluginOptions {
-    /**
-     * 是否启用es模块
-     */
-    esModule?: boolean
   }
 
   /**
@@ -244,14 +240,14 @@ declare namespace SmartWebpackPlugin {
     /**
      * 编译完成回调
      */
-    success?(): void
+    onSuccess?(): void
     /**
      * 编译失败回调
      */
-    errors?(errors: any[]): void
+    onError?(errors: any[]): void
     /**
      * 编译警告回调
      */
-    warnings?(warnings: any[]): void
+    onWarning?(warnings: any[]): void
   }
 }

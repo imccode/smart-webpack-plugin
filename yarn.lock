@@ -1572,6 +1572,15 @@ assert@^1.1.1:
     object-assign "^4.1.1"
     util "0.10.3"
 
+asset-webpack-plugin@^0.0.3:
+  version "0.0.3"
+  resolved "https://npm.zhonganinfo.com/asset-webpack-plugin/-/asset-webpack-plugin-0.0.3.tgz#d14e7383663fe862e4f7a093e0b8e45a1c031d8f"
+  integrity sha1-0U5zg2Y/6GLk96CT4LjkWhwDHY8=
+  dependencies:
+    file-loader "^5.0.2"
+    url-loader "^2.3.0"
+    webpack "^4.41.2"
+
 assign-symbols@^1.0.0:
   version "1.0.0"
   resolved "https://npm.zhonganinfo.com/assign-symbols/-/assign-symbols-1.0.0.tgz#59667f41fadd4f20ccbc2bb96b8d4f7f78ec0367"

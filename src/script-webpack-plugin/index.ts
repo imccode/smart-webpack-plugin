@@ -44,10 +44,8 @@ class ScriptWebpackPlugin {
    * @param compiler
    */
   inject(compiler: Compiler) {
-    const { plugins, output, resolve, optimization, performance, stats } = this.webpackConfig
+    const { plugins, output, resolve, optimization } = this.webpackConfig
     this.injectVue(compiler)
-    compiler.options.performance = performance
-    compiler.options.stats = stats
     compiler.options.output.filename = output.filename
     compiler.options.output.chunkFilename = output.chunkFilename
     compiler.options.resolve.extensions = Array.from(

@@ -106,6 +106,10 @@ declare namespace SmartWebpackPlugin {
          * server-webpack-plugin 本地开发环境 插件的可配参数
          */
         server?: false | ServerWebpackPluginOptions;
+        /**
+         * message-webpack-plugin webpack消息插件
+         */
+        message?: false | MessageWebpackPluginOptions;
     }
     /**
      * script-webpack-plugin 脚本资源 插件的可配参数
@@ -227,14 +231,14 @@ declare namespace SmartWebpackPlugin {
         /**
          * 编译完成回调
          */
-        success?(): void;
+        onSuccess?(): void;
         /**
          * 编译失败回调
          */
-        errors?(errors: any[]): void;
+        onError?(errors: any[]): void;
         /**
          * 编译警告回调
          */
-        warnings?(warnings: any[]): void;
+        onWarning?(warnings: any[]): void;
     }
 }

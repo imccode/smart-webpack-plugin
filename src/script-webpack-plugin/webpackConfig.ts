@@ -3,7 +3,6 @@ import chalk from 'chalk'
 import CompressionWebpackPlugin from 'compression-webpack-plugin'
 import TerserWebpackPlugin from 'terser-webpack-plugin'
 import VueLoaderPlugin from 'vue-loader/lib/plugin'
-import MessageWebpackPlugin from '../message-webpack-plugin'
 import { Compiler, Configuration } from 'webpack'
 import { isReact, isTypescript, isVue, root } from '../config'
 import log from '../log'
@@ -12,9 +11,6 @@ import babelConfig from './babelConfig'
 
 export default (options: ScriptWebpackPluginOptions, compiler: Compiler) => {
   const config: Configuration = {
-    stats: {
-      all: false
-    },
     /**
      * 导出配置
      */
@@ -190,10 +186,6 @@ export default (options: ScriptWebpackPluginOptions, compiler: Compiler) => {
         })
       ]
     }
-  }
-
-  if (compiler.options.mode === 'production') {
-    config.plugins.push(new MessageWebpackPlugin())
   }
 
   if (isTypescript) {

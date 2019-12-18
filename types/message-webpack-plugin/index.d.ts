@@ -1,4 +1,4 @@
-import { Compiler } from 'webpack';
+import { Compiler, Configuration } from 'webpack';
 import { MessageWebpackPluginOptions } from '../types';
 import formatWebpackMessages from './format';
 /**
@@ -6,6 +6,7 @@ import formatWebpackMessages from './format';
  */
 declare class MessageWebpackPlugin {
     options: MessageWebpackPluginOptions;
+    webpackConfig: Configuration;
     constructor(options?: MessageWebpackPluginOptions);
     /**
      * 执行插件
