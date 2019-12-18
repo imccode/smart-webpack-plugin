@@ -35,7 +35,7 @@
   "bugs": {
     "url": "https://github.com/imccode/smart-webpack-plugin/issues"
   },
-  "homepage": "https://github.com/imccode/smart-webpack-plugin",
+  "homepage": "https://github.com/imccode",
   "scripts": {
     "test": "ts-node ./test/test.ts",
     "build": "webpack --config ./my-app/test.js --mode production --display none",
