@@ -1,9 +1,10 @@
+import { AssetWebpackPluginOptions } from 'asset-webpack-plugin';
+import { ServeWebpackPluginOptions } from 'serve-webpack-plugin';
+import { MessageWebpackPluginOptions } from 'message-webpack-plugin';
+import { StylesWebpackPluginOptions } from 'styles-webpack-plugin';
+import { ScriptWebpackPluginOptions } from 'script-webpack-plugin';
 export = SmartWebpackPlugin;
 declare namespace SmartWebpackPlugin {
-    type ArrayOptions = Array<string | Array<string | {
-        [key: string]: any;
-    }>>;
-    type WSMessageType = 'beforeUpdate' | 'invalidUpdate' | 'update' | 'error';
     /**
      * 使用了那些框架
      */
@@ -35,50 +36,6 @@ declare namespace SmartWebpackPlugin {
         isEmpty?: boolean;
     } | null;
     /**
-     * babel配置
-     *
-     * docs: https://babeljs.io/docs/en/config-files
-     */
-    interface BabelConfiguration {
-        /**
-         * 转换器
-         */
-        presets?: ArrayOptions;
-        /**
-         * 插件
-         */
-        plugins?: ArrayOptions;
-        /**
-         * 未来可能引入的配置
-         */
-        [key: string]: any;
-    }
-    /**
-     * postcss 插件类型
-     */
-    type PostcssPlugins = (loader?: object) => Array<(...args: any) => object> | {
-        [key: string]: any;
-    };
-    /**
-     * postcss配置
-     *
-     * docs: https://github.com/postcss/postcss#usage
-     */
-    interface PostcssConfiguration {
-        /**
-         * postcss采用什么语法
-         */
-        ident?: string;
-        /**
-         * postcss插件
-         */
-        plugins?: PostcssPlugins;
-        /**
-         * 未来可能引入的配置
-         */
-        [key: string]: any;
-    }
-    /**
      * script-webpack-plugin 插件的可配参数
      */
     interface SmartWebpackPluginOptions {
@@ -89,7 +46,7 @@ declare namespace SmartWebpackPlugin {
         /**
          * style-webpack-plugin 样式资源 插件的可配参数
          */
-        style?: false | StyleWebpackPluginOptions;
+        style?: false | StylesWebpackPluginOptions;
         /**
          * asset-webpack-plugin 媒体资源 插件的可配参数
          */
@@ -99,71 +56,13 @@ declare namespace SmartWebpackPlugin {
          */
         lint?: false | LintWebpackPluginOptions;
         /**
-         * progress-webpack-plugin 构建进度 插件的可配参数
+         * serve-webpack-plugin 本地开发环境 插件的可配参数
          */
-        progress?: false | ProgressWebpackPluginOptions;
-        /**
-         * server-webpack-plugin 本地开发环境 插件的可配参数
-         */
-        server?: false | ServerWebpackPluginOptions;
+        serve?: false | ServeWebpackPluginOptions;
         /**
          * message-webpack-plugin webpack消息插件
          */
         message?: false | MessageWebpackPluginOptions;
-    }
-    /**
-     * script-webpack-plugin 脚本资源 插件的可配参数
-     */
-    interface ScriptWebpackPluginOptions {
-        /**
-         * 启用缓存，指定缓存路径
-         *
-         * 默认development环境启用
-         */
-        cacheDirectory?: string | boolean;
-        /**
-         * 是否删除console
-         *
-         * 默认true
-         */
-        dropConsole?: boolean;
-        /**
-         * 是否开启hot代码热更新
-         */
-        hot?: boolean;
-    }
-    /**
-     * style-webpack-plugin 样式资源 插件的可配参数
-     */
-    interface StyleWebpackPluginOptions {
-        /**
-         * 启用缓存，指定缓存路径
-         *
-         * 默认development环境启用
-         */
-        cacheDirectory?: string | boolean;
-        /**
-         * css-loader的options配置
-         */
-        cssLoader?: false | {
-            /**
-             * 启用/禁用 CSS 模块和设置模式
-             */
-            modules?: boolean | Function;
-            /**
-             * 未来可能引入的配置
-             */
-            [key: string]: any;
-        };
-    }
-    /**
-     * asset-webpack-plugin 媒体资源 插件的可配参数
-     */
-    interface AssetWebpackPluginOptions {
-        /**
-         * 是否启用es模块
-         */
-        esModule?: boolean;
     }
     /**
      * lint-webpack-plugin 代码校验 插件的可配参数
@@ -199,46 +98,5 @@ declare namespace SmartWebpackPlugin {
              */
             [key: string]: any;
         };
-    }
-    /**
-     * progress-webpack-plugin 构建进度 插件的可配参数
-     */
-    interface ProgressWebpackPluginOptions {
-    }
-    /**
-     * server-webpack-plugin 本地开发环境 插件的可配参数
-     *
-     * options docs: https://github.com/shellscape/webpack-plugin-serve
-     */
-    interface ServerWebpackPluginOptions {
-        /**
-         * 开发端口
-         */
-        port?: number;
-        /**
-         * 是否开启压缩，主要返回gzip文件
-         */
-        compress?: boolean;
-        /**
-         * 是否开启hot代码热更新
-         */
-        hot?: boolean;
-    }
-    /**
-     * message-webpack-plugin webpack消息插件
-     */
-    interface MessageWebpackPluginOptions {
-        /**
-         * 编译完成回调
-         */
-        onSuccess?(): void;
-        /**
-         * 编译失败回调
-         */
-        onError?(errors: any[]): void;
-        /**
-         * 编译警告回调
-         */
-        onWarning?(warnings: any[]): void;
     }
 }

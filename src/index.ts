@@ -1,15 +1,13 @@
-import { SmartWebpackPluginOptions } from './types'
-import { Compiler, Configuration } from 'webpack'
 import AssetWebpackPlugin from 'asset-webpack-plugin'
+import chalk from 'chalk'
+import MessageWebpackPlugin from 'message-webpack-plugin'
+import ScriptWebpackPlugin from 'script-webpack-plugin'
+import ServeWebpackPlugin from 'serve-webpack-plugin'
+import StyleWebpackPlugin from 'styles-webpack-plugin'
+import { Compiler, Configuration } from 'webpack'
 import LintWebpackPlugin from './lint-webpack-plugin'
-import MessageWebpackPlugin from './message-webpack-plugin'
-import ProgressWebpackPlugin from './progress-webpack-plugin'
 import log from './log'
-import ScriptWebpackPlugin from './script-webpack-plugin'
-import ServerWebpackPlugin from './server-webpack-plugin'
-import StyleWebpackPlugin from './style-webpack-plugin'
-import chalk = require('chalk')
-import { localIps } from './utils'
+import { SmartWebpackPluginOptions } from './types'
 
 /**
  * smart webpack 插件
@@ -29,8 +27,7 @@ class SmartWebpackPlugin {
    */
   apply(compiler: Compiler) {
     const { mode, target } = compiler.options
-    const { script, style, asset, lint, progress, server, message } = this.options
-    const port = 33333
+    const { script, style, asset, lint, serve, message } = this.options
 
     if (!['development', 'production'].includes(mode)) {
       console.log(
@@ -55,35 +52,11 @@ class SmartWebpackPlugin {
     if (lint !== false) {
       compiler.options.plugins.push(new LintWebpackPlugin(lint))
     }
-
     if (message !== false) {
-      compiler.options.plugins.push(
-        new MessageWebpackPlugin({
-          ...(message || {}),
-          onSuccess() {
-            if (mode !== 'development') return
-            console.log('\n在浏览器打开以下地址浏览.\n')
-            console.log(`  本地地址：${chalk.underline(`http://localhost:${port}`)}`)
-            localIps()
-              .map(ip => `  网络地址: ${chalk.underline(`http://${ip}:${port}`)}`)
-              .forEach(msg => {
-                console.log(msg)
-              })
-          }
-        })
-      )
+      compiler.options.plugins.push(new MessageWebpackPlugin(message))
     }
-    // if (progress !== false) {
-    //   compiler.options.plugins.push(new ProgressWebpackPlugin(progress))
-    // }
-
-    if (server !== false && mode === 'development') {
-      compiler.options.plugins.push(
-        new ServerWebpackPlugin({
-          ...(server || {}),
-          port
-        })
-      )
+    if (serve !== false) {
+      compiler.options.plugins.push(new ServeWebpackPlugin(serve))
     }
   }
 }

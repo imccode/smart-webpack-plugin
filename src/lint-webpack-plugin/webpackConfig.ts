@@ -5,7 +5,7 @@ import StylelintWebpackPlugin from 'stylelint-webpack-plugin'
 import { LintWebpackPluginOptions, SmartCosmiconfigResult } from '../types'
 import { Configuration } from 'webpack'
 import { isReact, isTypescript, isVue, root } from '../config'
-import chalk = require('chalk')
+import chalk from 'chalk'
 
 export default (options: LintWebpackPluginOptions) => {
   let regExpStr = isTypescript ? '.(t|j)s' : '.js'
